@@ -4,13 +4,13 @@
 - Concatenation: `ab`
 - Alternation: `a|b`
 - Grouping: `(ab)`
-- Quantifiers: `?`, `+`, `*`
+- Quantifiers: `?`, `+`, `*`, `{m,n}`
+- Wildcard: `.`
+- Anchors: `^`, `$`
 - Character classes: `[a-z0-9_]`
 - Escape sequences: `\\` for literal meta characters
 
 ## Out of Scope / Not Yet
-- Bounded quantifiers: `{m,n}`
-- Wildcard: `.`
 - Lookarounds: `(?=...)`, `(?!...)`
 - Flags and inline modifiers
 - Unicode classes and complex escapes

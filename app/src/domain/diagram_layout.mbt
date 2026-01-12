@@ -152,6 +152,7 @@ fn layout_repeat(inner : RegexNode, kind : RepeatKind) -> Diagram {
   let allow_bypass = match kind {
     Optional => true
     ZeroOrMore => true
+    Range(min, _) => min == 0
     _ => false
   }
   if allow_bypass {
@@ -162,12 +163,27 @@ fn layout_repeat(inner : RegexNode, kind : RepeatKind) -> Diagram {
   let allow_loop = match kind {
     OneOrMore => true
     ZeroOrMore => true
+    Range(min, max) => {
+      let upper = match max {
+        Some(value) => value
+        None => min + 1
+      }
+      upper > 1 || min > 1
+    }
     _ => false
   }
   if allow_loop {
     let loop_y = height - loop_gap / 2
     // 繰り返しループを丸角で描画
     shapes.push(Path(loop_path(pad, pad + child.width, entry_y, loop_y), "rr-line", 0, 0))
+  }
+  match kind {
+    Range(min, max) => {
+      // 回数指定のラベルを追加
+      let label = range_label(min, max)
+      shapes.push(Text(width / 2, 8, label, "rr-label"))
+    }
+    _ => ()
   }
   { width, height, entry_y, exit_y: entry_y, shapes }
 }
@@ -255,6 +271,18 @@ fn loop_path(left_x : Int, right_x : Int, entry_y : Int, loop_y : Int) -> String
   sb.write_string(" ")
   sb.write_string(entry_y.to_string())
   sb.to_string()
+}
+
+fn range_label(min : Int, max : Int?) -> String {
+  match max {
+    Some(value) =>
+      if value == min {
+        "{" + min.to_string() + "}"
+      } else {
+        "{" + min.to_string() + "," + value.to_string() + "}"
+      }
+    None => "{" + min.to_string() + ",}"
+  }
 }
 
 pub fn append_shapes(target : Array[Shape], extra : Array[Shape]) -> Unit {

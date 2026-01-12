@@ -4,6 +4,7 @@ pub enum RepeatKind {
   Optional
   OneOrMore
   ZeroOrMore
+  Range(Int, Int?)
 }
 
 pub enum RegexNode {
@@ -21,7 +22,7 @@ pub fn empty_node() -> RegexNode {
   Empty
 }
 
-struct Parser {
+priv struct Parser {
   chars : Array[Char]
   mut pos : Int
 }
@@ -74,6 +75,30 @@ pub fn parse_regex(input : String) -> Result[RegexNode, String] {
       }
     }
     Err(msg) => Err(msg)
+  }
+}
+
+fn is_digit(ch : Char) -> Bool {
+  ch >= '0' && ch <= '9'
+}
+
+fn parse_number(parser : Parser) -> Result[Int, String] {
+  let mut value = 0
+  let mut has_digit = false
+  while true {
+    match parser.peek() {
+      Some(c) if is_digit(c) => {
+        value = value * 10 + (c.to_int() - '0'.to_int())
+        parser.next() |> ignore
+        has_digit = true
+      }
+      _ => break
+    }
+  }
+  if not(has_digit) {
+    Err("数値が必要です")
+  } else {
+    Ok(value)
   }
 }
 
@@ -137,7 +162,36 @@ fn parse_repeat(parser : Parser) -> Result[RegexNode, String] {
       parser.next() |> ignore
       Ok(Repeat(node, Optional))
     }
+    Some('{') => parse_range(parser, node)
     _ => Ok(node)
+  }
+}
+
+fn parse_range(parser : Parser, node : RegexNode) -> Result[RegexNode, String] {
+  parser.next() |> ignore
+  let min = match parse_number(parser) {
+    Ok(value) => value
+    Err(msg) => return Err(msg)
+  }
+  let mut max : Int? = None
+  if parser.consume(',') {
+    match parser.peek() {
+      Some('}') => max = None
+      _ => {
+        let max_value = match parse_number(parser) {
+          Ok(value) => value
+          Err(msg) => return Err(msg)
+        }
+        max = Some(max_value)
+      }
+    }
+  } else {
+    max = Some(min)
+  }
+  if parser.consume('}') {
+    Ok(Repeat(node, Range(min, max)))
+  } else {
+    Err("'}'がありません")
   }
 }
 
@@ -159,6 +213,18 @@ fn parse_atom(parser : Parser) -> Result[RegexNode, String] {
     }
     Some('[') => parse_char_class(parser)
     Some('\\') => parse_escape(parser)
+    Some('.') => {
+      parser.next() |> ignore
+      Ok(Literal("任意"))
+    }
+    Some('^') => {
+      parser.next() |> ignore
+      Ok(Literal("先頭"))
+    }
+    Some('$') => {
+      parser.next() |> ignore
+      Ok(Literal("末尾"))
+    }
     Some(')') => Err("位置" + parser.pos.to_string() + "で')'が不正です")
     Some('|') => Err("位置" + parser.pos.to_string() + "で'|'が不正です")
     Some(c) => {
