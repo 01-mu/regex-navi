@@ -2,21 +2,21 @@
 
 :root {
   color-scheme: light;
-  --bg-1: #fff7cc;
-  --bg-2: #cfe9ff;
+  --bg-1: #fff6c4;
+  --bg-2: #cfe6ff;
   --ink-1: #151515;
   --ink-2: #2d2d2d;
   --accent-1: #2563eb;
   --accent-2: #f97316;
   --accent-3: #22c55e;
   --accent-4: #f43f5e;
-  --hero-bg: #fff1a8;
-  --panel: #ffffff;
+  --hero-bg: #ffe1b3;
+  --panel: #fff8e6;
   --panel-edge: #151515;
   --panel-shadow: #151515;
-  --input-bg: #f4ffea;
+  --input-bg: #e6fff6;
   --error-bg: #ffe1ec;
-  --svg-bg: #f6fbff;
+  --svg-bg: #f1f6ff;
   --rail-line: #111827;
   --rail-box: #ffe66d;
   --rail-text: #151515;
@@ -113,7 +113,7 @@ input.regex-input {
 
 button.example {
   border: 3px solid var(--panel-edge);
-  background: #fff3a1;
+  background: #ffd39a;
   border-radius: 0;
   padding: 6px 12px;
   font-size: 12px;
