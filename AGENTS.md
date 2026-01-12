@@ -20,6 +20,7 @@ Run commands from `app/`.
 - Styling: keep CSS class names kebab-case (e.g., `.regex-input`, `.svg-wrap`).
 - No formatter or linter is configured; keep changes consistent with nearby code.
 - Add concise Japanese comments where they help explain non-obvious logic.
+- Use Japanese copy for UI text and user-facing strings unless there is a clear reason not to.
 
 ## Testing Guidelines
 - Automated tests are not configured.

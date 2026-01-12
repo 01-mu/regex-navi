@@ -587,19 +587,19 @@ fn main {
     Some(el) => {
       let app = @dom.div(class="app", [
         @dom.div(class="hero", [
-          @dom.h1([@dom.text("Regex Rail")]),
+          @dom.h1([@dom.text("正規表現ナビ")]),
           @dom.p([
-            @dom.text("Visualize regex structure as a rail diagram SVG."),
+            @dom.text("正規表現の構造を分かりやすく可視化します。"),
           ]),
         ]),
         @dom.div(class="layout", [
           @dom.div(class="panel", [
-            @dom.h2([@dom.text("Input")]),
+            @dom.h2([@dom.text("入力")]),
             @dom.div(class="input-row", [
               @dom.input(
                 type_="text",
                 class="regex-input",
-                placeholder="Example: (ab|cd)+",
+                placeholder="例: (ab|cd)+",
                 dyn_value=fn() { pattern.get() },
                 on=@dom.events().input(fn(e) {
                   let target = e.target()
@@ -608,7 +608,7 @@ fn main {
                 }),
               ),
               @dom.p(class="hint", [
-                @dom.text("Support: (), concat, |, ?, +, *, character classes, \\\\ escape."),
+                @dom.text("対応: (), 連結, |, ?, +, *, 文字クラス, \\\\ エスケープ"),
               ]),
               @dom.div(class="example-row", examples.map(fn(value) {
                 @dom.button(
@@ -625,7 +625,7 @@ fn main {
             ]),
           ]),
           @dom.div(class="panel", [
-            @dom.h2([@dom.text("Rail Diagram")]),
+            @dom.h2([@dom.text("図")]),
             @dom.div(
               class="svg-wrap",
               ref_=fn(el) { svg_ref.set(Some(el)) },
