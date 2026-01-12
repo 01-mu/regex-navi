@@ -8,12 +8,20 @@ pub fn build_svg(pattern : String) -> Result[String, String] {
 }
 
 pub fn render_svg(diagram : Diagram) -> String {
-  let pad = 16
+  let pad = 28
   let width = diagram.width + pad * 2
   let height = diagram.height + pad * 2
+  let marker_radius = 7
+  let start_x = marker_radius + 2
+  let end_x = width - marker_radius - 2
+  let entry_y = pad + diagram.entry_y
+  let exit_y = pad + diagram.exit_y
   let shapes : Array[Shape] = []
-  shapes.push(Line(0, pad + diagram.entry_y, pad, pad + diagram.entry_y, "rr-line"))
-  shapes.push(Line(pad + diagram.width, pad + diagram.exit_y, width, pad + diagram.exit_y, "rr-line"))
+  // 始点/終点をマーカーで明示する
+  shapes.push(Circle(start_x, entry_y, marker_radius, "rr-marker"))
+  shapes.push(Path(arrow_path(end_x, exit_y, marker_radius), "rr-marker", 0, 0))
+  shapes.push(Line(start_x + marker_radius, entry_y, pad, entry_y, "rr-line"))
+  shapes.push(Line(pad + diagram.width, exit_y, end_x - marker_radius, exit_y, "rr-line"))
   append_shapes(shapes, offset_shapes(diagram.shapes, pad, pad))
   let sb = StringBuilder::new()
   sb.write_string("<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"")
@@ -47,6 +55,9 @@ fn shape_to_svg(shape : Shape) -> String {
       "\" y=\"" + y.to_string() +
       "\" text-anchor=\"middle\" dominant-baseline=\"middle\">" +
       escape_xml(text) + "</text>"
+    Circle(cx, cy, r, class_) =>
+      "<circle class=\"" + class_ + "\" cx=\"" + cx.to_string() +
+      "\" cy=\"" + cy.to_string() + "\" r=\"" + r.to_string() + "\" />"
     Path(d, class_, dx, dy) =>
       if dx == 0 && dy == 0 {
         "<path class=\"" + class_ + "\" d=\"" + d + "\" />"
@@ -70,4 +81,22 @@ fn escape_xml(input : String) -> String {
     }
   }
   buf.to_string()
+}
+
+fn arrow_path(cx : Int, cy : Int, size : Int) -> String {
+  let sb = StringBuilder::new()
+  sb.write_string("M ")
+  sb.write_string((cx - size).to_string())
+  sb.write_string(" ")
+  sb.write_string((cy - size).to_string())
+  sb.write_string(" L ")
+  sb.write_string((cx - size).to_string())
+  sb.write_string(" ")
+  sb.write_string((cy + size).to_string())
+  sb.write_string(" L ")
+  sb.write_string((cx + size).to_string())
+  sb.write_string(" ")
+  sb.write_string(cy.to_string())
+  sb.write_string(" Z")
+  sb.to_string()
 }

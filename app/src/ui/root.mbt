@@ -36,7 +36,7 @@ pub fn build_root(
             }),
           ),
           @dom.p(class="hint", [
-            @dom.text("対応: (), 連結, |, ?, +, *, 文字クラス, \\ エスケープ"),
+            @dom.text("対応: (), 連結, |, ?, +, *, {m,n}, ., ^, $, 文字クラス, \\\\ エスケープ"),
           ]),
           @dom.div(class="example-row", examples.map(fn(value) {
             @dom.button(

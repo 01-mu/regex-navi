@@ -4,6 +4,7 @@ pub enum Shape {
   Line(Int, Int, Int, Int, String)
   Rect(Int, Int, Int, Int, String)
   Text(Int, Int, String, String)
+  Circle(Int, Int, Int, String)
   // 曲線パスは平行移動も保持する
   Path(String, String, Int, Int)
 }
@@ -56,6 +57,7 @@ fn layout_concat(nodes : Array[RegexNode]) -> Diagram {
     return layout(nodes[0])
   }
   let gap = 20
+  let edge_gap = 3
   let layouts : Array[Diagram] = []
   let mut height = 0
   for node in nodes {
@@ -74,8 +76,8 @@ fn layout_concat(nodes : Array[RegexNode]) -> Diagram {
     let child_y = center_y - child.entry_y
     append_shapes(shapes, offset_shapes(child.shapes, x, child_y))
     if i > 0 {
-      let line_start = x - gap
-      let line_end = x
+      let line_start = x - gap + edge_gap
+      let line_end = x - edge_gap
       shapes.push(Line(line_start, center_y, line_end, center_y, "rr-line"))
     }
     x = x + child.width
@@ -94,6 +96,8 @@ fn layout_alt(nodes : Array[RegexNode]) -> Diagram {
   }
   let gap = 20
   let pad = 20
+  let edge_gap = 3
+  let join_gap = pad
   let layouts : Array[Diagram] = []
   let mut max_width = 0
   let mut total_height = 0
@@ -112,7 +116,7 @@ fn layout_alt(nodes : Array[RegexNode]) -> Diagram {
   }
   let entry_y = total_height / 2
   let left_x = 0
-  let right_x = pad + max_width
+  let right_x = pad + max_width + join_gap
   let shapes : Array[Shape] = []
   let mut y = 0
   let mut top_branch = 0
@@ -127,10 +131,12 @@ fn layout_alt(nodes : Array[RegexNode]) -> Diagram {
     if i == layouts.length() - 1 {
       bottom_branch = branch_y
     }
+    // 右端の合流線と箱が重ならないよう余白を作る
     append_shapes(shapes, offset_shapes(child.shapes, pad, child_y))
     // 分岐は背骨から水平に接続して視認性を優先
-    shapes.push(Line(left_x, branch_y, pad, branch_y, "rr-line"))
-    shapes.push(Line(pad + child.width, branch_y, right_x, branch_y, "rr-line"))
+    shapes.push(Line(left_x, branch_y, pad - edge_gap, branch_y, "rr-line"))
+    // 左側と同じ距離で合流させる
+    shapes.push(Line(pad + child.width + edge_gap, branch_y, right_x, branch_y, "rr-line"))
     y = y + child.height + gap
   }
   shapes.push(Line(left_x, top_branch, left_x, bottom_branch, "rr-line"))
@@ -141,17 +147,19 @@ fn layout_alt(nodes : Array[RegexNode]) -> Diagram {
 fn layout_repeat(inner : RegexNode, kind : RepeatKind) -> Diagram {
   let child = layout(inner)
   let pad = 20
+  let edge_gap = 3
   let loop_gap = 18
   let width = child.width + pad * 2
   let height = child.height + loop_gap * 2
   let entry_y = loop_gap + child.entry_y
   let shapes : Array[Shape] = []
   append_shapes(shapes, offset_shapes(child.shapes, pad, loop_gap))
-  shapes.push(Line(0, entry_y, pad, entry_y, "rr-line"))
-  shapes.push(Line(pad + child.width, entry_y, width, entry_y, "rr-line"))
+  shapes.push(Line(0, entry_y, pad - edge_gap, entry_y, "rr-line"))
+  shapes.push(Line(pad + child.width + edge_gap, entry_y, width, entry_y, "rr-line"))
   let allow_bypass = match kind {
     Optional => true
     ZeroOrMore => true
+    Range(min, _) => min == 0
     _ => false
   }
   if allow_bypass {
@@ -162,12 +170,27 @@ fn layout_repeat(inner : RegexNode, kind : RepeatKind) -> Diagram {
   let allow_loop = match kind {
     OneOrMore => true
     ZeroOrMore => true
+    Range(min, max) => {
+      let upper = match max {
+        Some(value) => value
+        None => min + 1
+      }
+      upper > 1 || min > 1
+    }
     _ => false
   }
   if allow_loop {
     let loop_y = height - loop_gap / 2
     // 繰り返しループを丸角で描画
     shapes.push(Path(loop_path(pad, pad + child.width, entry_y, loop_y), "rr-line", 0, 0))
+  }
+  match kind {
+    Range(min, max) => {
+      // 回数指定のラベルを追加
+      let label = range_label(min, max)
+      shapes.push(Text(width / 2, 8, label, "rr-label"))
+    }
+    _ => ()
   }
   { width, height, entry_y, exit_y: entry_y, shapes }
 }
@@ -257,6 +280,18 @@ fn loop_path(left_x : Int, right_x : Int, entry_y : Int, loop_y : Int) -> String
   sb.to_string()
 }
 
+fn range_label(min : Int, max : Int?) -> String {
+  match max {
+    Some(value) =>
+      if value == min {
+        "{" + min.to_string() + "}"
+      } else {
+        "{" + min.to_string() + "," + value.to_string() + "}"
+      }
+    None => "{" + min.to_string() + ",}"
+  }
+}
+
 pub fn append_shapes(target : Array[Shape], extra : Array[Shape]) -> Unit {
   for shape in extra {
     target.push(shape)
@@ -271,6 +306,7 @@ pub fn offset_shapes(shapes : Array[Shape], dx : Int, dy : Int) -> Array[Shape] 
         result.push(Line(x1 + dx, y1 + dy, x2 + dx, y2 + dy, class_))
       Rect(x, y, w, h, class_) => result.push(Rect(x + dx, y + dy, w, h, class_))
       Text(x, y, text, class_) => result.push(Text(x + dx, y + dy, text, class_))
+      Circle(cx, cy, r, class_) => result.push(Circle(cx + dx, cy + dy, r, class_))
       Path(d, class_, ox, oy) => result.push(Path(d, class_, ox + dx, oy + dy))
     }
   }
