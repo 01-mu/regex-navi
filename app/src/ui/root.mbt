@@ -10,6 +10,12 @@ pub fn build_root(
     "(foo|bar)baz",
     "https?://[a-z]+",
     "colou?r",
+    "^hello$",
+    "a+b+c+",
+    "ab{2,4}c",
+    "(ab|cd)+",
+    "file\\.(png|jpg)",
+    "[a-z]{3,6}\\d?",
   ]
 
   @dom.div(class="app", [
