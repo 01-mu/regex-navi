@@ -12,6 +12,14 @@
     {
       "path": "mizchi/js/browser/dom",
       "alias": "js_dom"
+    },
+    {
+      "path": "internal/app/domain",
+      "alias": "domain"
+    },
+    {
+      "path": "internal/app/ui",
+      "alias": "ui"
     }
   ],
   "link": {
