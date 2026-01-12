@@ -19,6 +19,7 @@ Run commands from `app/`.
 - Naming: use lower_snake_case for MoonBit identifiers where consistent; use lowerCamelCase for TS.
 - Styling: keep CSS class names kebab-case (e.g., `.regex-input`, `.svg-wrap`).
 - No formatter or linter is configured; keep changes consistent with nearby code.
+- Add concise Japanese comments where they help explain non-obvious logic.
 
 ## Testing Guidelines
 - Automated tests are not configured.
