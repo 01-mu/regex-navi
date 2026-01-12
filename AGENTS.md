@@ -32,6 +32,8 @@ Run commands from `app/`.
 - PRs should include: summary, manual test steps, and UI screenshots/gifs for visual changes.
 - Link related issues when available.
 - Jujutsu の change は必ず description を付ける（作業開始時に `jj describe` で更新）。
+- ブランチ運用: dev で作業し、指示があれば作業ブックマークを切って dev に統合する。dev -> main は GitHub の PR のみ許可する。
+- Jujutsu のチェンジ/コミットには適切なメッセージを付与する。
 
 ## Security & Configuration Tips
 - Do not commit secrets. Prefer `.env.example` with placeholders if config is needed.
