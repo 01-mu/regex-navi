@@ -3,7 +3,6 @@
 pub fn build_root(
   pattern : @signal.Signal[String],
   error : @signal.Signal[String],
-  svg : @signal.Signal[String],
   svg_ref : @signal.Signal[@js_dom.Element?],
 ) -> @dom.DomNode {
   let examples = [
@@ -11,6 +10,12 @@ pub fn build_root(
     "(foo|bar)baz",
     "https?://[a-z]+",
     "colou?r",
+    "^hello$",
+    "a+b+c+",
+    "ab{2,4}c",
+    "(ab|cd)+",
+    "file\\.(png|jpg)",
+    "[a-z]{3,6}\\d?",
   ]
 
   @dom.div(class="app", [
@@ -21,7 +26,7 @@ pub fn build_root(
       ]),
     ]),
     @dom.div(class="layout", [
-      @dom.div(class="panel", [
+      @dom.div(class="panel panel-input", [
         @dom.h2([@dom.text("入力")]),
         @dom.div(class="input-row", [
           @dom.input(
@@ -52,8 +57,8 @@ pub fn build_root(
           ),
         ]),
       ]),
-      @dom.div(class="panel", [
-        @dom.h2([@dom.text("図")]),
+      @dom.div(class="panel panel-output", [
+        @dom.h2([@dom.text("出力")]),
         @dom.div(
           class="svg-wrap",
           ref_=fn(el) { svg_ref.set(Some(el)) },

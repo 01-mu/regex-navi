@@ -21,10 +21,22 @@
 }
 
 .rr-label {
-  fill: var(--accent-2);
-  font-family: "IBM Plex Mono", "Menlo", "SFMono-Regular", monospace;
-  font-size: 12px;
+  fill: var(--accent-4);
+  font-family: "Zen Kurenaido", "Hiragino Kaku Gothic ProN", sans-serif;
+  font-size: 13px;
   font-weight: 700;
+  stroke: #fff8e6;
+  stroke-width: 4;
+  letter-spacing: 0.02em;
+  paint-order: stroke fill;
+}
+
+.rr-loop-soft {
+  stroke: var(--rail-line);
+  stroke-width: 3;
+  fill: none;
+  stroke-linecap: round;
+  stroke-linejoin: round;
 }
 
 .rr-marker {

@@ -169,4 +169,12 @@ button.example:hover {
   .layout {
     grid-template-columns: 1fr;
   }
+
+  .panel-output {
+    order: 1;
+  }
+
+  .panel-input {
+    order: 2;
+  }
 }

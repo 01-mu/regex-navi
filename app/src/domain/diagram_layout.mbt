@@ -148,7 +148,12 @@ fn layout_repeat(inner : RegexNode, kind : RepeatKind) -> Diagram {
   let child = layout(inner)
   let pad = 20
   let edge_gap = 3
-  let loop_gap = 18
+  let loop_gap = match kind {
+    OneOrMore => 32
+    ZeroOrMore => 32
+    Range(_, _) => 26
+    _ => 18
+  }
   let width = child.width + pad * 2
   let height = child.height + loop_gap * 2
   let entry_y = loop_gap + child.entry_y
@@ -156,6 +161,8 @@ fn layout_repeat(inner : RegexNode, kind : RepeatKind) -> Diagram {
   append_shapes(shapes, offset_shapes(child.shapes, pad, loop_gap))
   shapes.push(Line(0, entry_y, pad - edge_gap, entry_y, "rr-line"))
   shapes.push(Line(pad + child.width + edge_gap, entry_y, width, entry_y, "rr-line"))
+  let bypass_y = loop_gap / 2
+  let loop_y = height - loop_gap / 2
   let allow_bypass = match kind {
     Optional => true
     ZeroOrMore => true
@@ -163,7 +170,6 @@ fn layout_repeat(inner : RegexNode, kind : RepeatKind) -> Diagram {
     _ => false
   }
   if allow_bypass {
-    let bypass_y = loop_gap / 2
     // Optional/ZeroOrMore のバイパスを丸角にする
     shapes.push(Path(bypass_path(width, entry_y, bypass_y), "rr-line", 0, 0))
   }
@@ -180,15 +186,36 @@ fn layout_repeat(inner : RegexNode, kind : RepeatKind) -> Diagram {
     _ => false
   }
   if allow_loop {
-    let loop_y = height - loop_gap / 2
     // 繰り返しループを丸角で描画
-    shapes.push(Path(loop_path(pad, pad + child.width, entry_y, loop_y), "rr-line", 0, 0))
+    let loop_radius = match kind {
+      OneOrMore => 14
+      _ => 8
+    }
+    let loop_class = match kind {
+      OneOrMore => "rr-loop-soft"
+      _ => "rr-line"
+    }
+    shapes.push(Path(loop_path(pad, pad + child.width, entry_y, loop_y, loop_radius), loop_class, 0, 0))
   }
   match kind {
     Range(min, max) => {
       // 回数指定のラベルを追加
       let label = range_label(min, max)
-      shapes.push(Text(width / 2, 8, label, "rr-label"))
+      if min == 0 {
+        add_label(shapes, width / 2, label_top_y(bypass_y), label)
+      } else {
+        add_label(shapes, width / 2, label_bottom_y(loop_y, height), label)
+      }
+    }
+    Optional => {
+      ()
+    }
+    OneOrMore => {
+      // ループ側に寄せて意味を補足
+      add_label(shapes, width / 2, label_bottom_y(loop_y, height), "1回以上")
+    }
+    ZeroOrMore => {
+      add_label(shapes, width / 2, label_bottom_y(loop_y, height), "0回以上")
     }
     _ => ()
   }
@@ -242,8 +269,14 @@ fn bypass_path(width : Int, entry_y : Int, bypass_y : Int) -> String {
   sb.to_string()
 }
 
-fn loop_path(left_x : Int, right_x : Int, entry_y : Int, loop_y : Int) -> String {
-  let radius = clamp_radius(8, right_x - left_x, loop_y - entry_y)
+fn loop_path(
+  left_x : Int,
+  right_x : Int,
+  entry_y : Int,
+  loop_y : Int,
+  radius_hint : Int,
+) -> String {
+  let radius = clamp_radius(radius_hint, right_x - left_x, loop_y - entry_y)
   let sb = StringBuilder::new()
   sb.write_string("M ")
   sb.write_string(right_x.to_string())
@@ -284,12 +317,28 @@ fn range_label(min : Int, max : Int?) -> String {
   match max {
     Some(value) =>
       if value == min {
-        "{" + min.to_string() + "}"
+        min.to_string() + "回"
       } else {
-        "{" + min.to_string() + "," + value.to_string() + "}"
+        min.to_string() + "〜" + value.to_string() + "回"
       }
-    None => "{" + min.to_string() + ",}"
+    None => min.to_string() + "回以上"
   }
+}
+
+// ラベルが線に重ならない位置へ調整する
+fn label_top_y(bypass_y : Int) -> Int {
+  let candidate = bypass_y - 12
+  if candidate < 10 { 10 } else { candidate }
+}
+
+fn label_bottom_y(loop_y : Int, height : Int) -> Int {
+  let candidate = loop_y + 30
+  let max_y = height - 2
+  if candidate > max_y { max_y } else { candidate }
+}
+
+fn add_label(shapes : Array[Shape], center_x : Int, center_y : Int, text : String) -> Unit {
+  shapes.push(Text(center_x, center_y, text, "rr-label"))
 }
 
 pub fn append_shapes(target : Array[Shape], extra : Array[Shape]) -> Unit {

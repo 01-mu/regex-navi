@@ -137,11 +137,49 @@ fn parse_concat(parser : Parser) -> Result[RegexNode, String] {
   }
   if nodes.is_empty() {
     Ok(Empty)
-  } else if nodes.length() == 1 {
-    Ok(nodes[0])
   } else {
-    Ok(Concat(nodes))
+    let merged = merge_literals(nodes)
+    if merged.length() == 1 {
+      Ok(merged[0])
+    } else {
+      Ok(Concat(merged))
+    }
   }
+}
+
+// 連続するリテラルをまとめて1つのボックスにする
+fn is_anchor_literal(text : String) -> Bool {
+  text == "開始" || text == "終了"
+}
+
+fn merge_literals(nodes : Array[RegexNode]) -> Array[RegexNode] {
+  let merged : Array[RegexNode] = []
+  let mut buffer = ""
+  for node in nodes {
+    match node {
+      Literal(text) =>
+        if is_anchor_literal(text) {
+          if not(buffer.is_empty()) {
+            merged.push(Literal(buffer))
+            buffer = ""
+          }
+          merged.push(node)
+        } else {
+          buffer = buffer + text
+        }
+      _ => {
+        if not(buffer.is_empty()) {
+          merged.push(Literal(buffer))
+          buffer = ""
+        }
+        merged.push(node)
+      }
+    }
+  }
+  if not(buffer.is_empty()) {
+    merged.push(Literal(buffer))
+  }
+  merged
 }
 
 fn parse_repeat(parser : Parser) -> Result[RegexNode, String] {
@@ -219,11 +257,11 @@ fn parse_atom(parser : Parser) -> Result[RegexNode, String] {
     }
     Some('^') => {
       parser.next() |> ignore
-      Ok(Literal("先頭"))
+      Ok(Literal("開始"))
     }
     Some('$') => {
       parser.next() |> ignore
-      Ok(Literal("末尾"))
+      Ok(Literal("終了"))
     }
     Some(')') => Err("位置" + parser.pos.to_string() + "で')'が不正です")
     Some('|') => Err("位置" + parser.pos.to_string() + "で'|'が不正です")
