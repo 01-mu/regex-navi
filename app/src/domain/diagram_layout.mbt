@@ -94,6 +94,7 @@ fn layout_alt(nodes : Array[RegexNode]) -> Diagram {
   }
   let gap = 20
   let pad = 20
+  let join_gap = pad
   let layouts : Array[Diagram] = []
   let mut max_width = 0
   let mut total_height = 0
@@ -112,7 +113,7 @@ fn layout_alt(nodes : Array[RegexNode]) -> Diagram {
   }
   let entry_y = total_height / 2
   let left_x = 0
-  let right_x = pad + max_width
+  let right_x = pad + max_width + join_gap
   let shapes : Array[Shape] = []
   let mut y = 0
   let mut top_branch = 0
@@ -127,9 +128,11 @@ fn layout_alt(nodes : Array[RegexNode]) -> Diagram {
     if i == layouts.length() - 1 {
       bottom_branch = branch_y
     }
+    // 右端の合流線と箱が重ならないよう余白を作る
     append_shapes(shapes, offset_shapes(child.shapes, pad, child_y))
     // 分岐は背骨から水平に接続して視認性を優先
     shapes.push(Line(left_x, branch_y, pad, branch_y, "rr-line"))
+    // 左側と同じ距離で合流させる
     shapes.push(Line(pad + child.width, branch_y, right_x, branch_y, "rr-line"))
     y = y + child.height + gap
   }
