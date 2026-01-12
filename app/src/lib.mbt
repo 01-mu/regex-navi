@@ -292,7 +292,6 @@ fn layout_alt(nodes : Array[RegexNode]) -> Diagram {
   }
   let gap = 20
   let pad = 20
-  let elbow = 10
   let layouts : Array[Diagram] = []
   let mut max_width = 0
   let mut total_height = 0
@@ -327,9 +326,9 @@ fn layout_alt(nodes : Array[RegexNode]) -> Diagram {
       bottom_branch = branch_y
     }
     append_shapes(shapes, offset_shapes(child.shapes, pad, child_y))
-    // 分岐の入口/出口を丸角で接続
-    shapes.push(Path(alt_left_elbow(left_x, pad, entry_y, branch_y, elbow), "rr-line"))
-    shapes.push(Path(alt_right_elbow(right_x, pad + child.width, entry_y, branch_y, elbow), "rr-line"))
+    // 分岐は背骨から水平に接続して視認性を優先
+    shapes.push(Line(left_x, branch_y, pad, branch_y, "rr-line"))
+    shapes.push(Line(pad + child.width, branch_y, right_x, branch_y, "rr-line"))
     y = y + child.height + gap
   }
   shapes.push(Line(left_x, top_branch, left_x, bottom_branch, "rr-line"))
@@ -451,60 +450,6 @@ fn loop_path(left_x : Int, right_x : Int, entry_y : Int, loop_y : Int) -> String
   sb.write_string((loop_y - radius).to_string())
   sb.write_string(" L ")
   sb.write_string(left_x.to_string())
-  sb.write_string(" ")
-  sb.write_string(entry_y.to_string())
-  sb.to_string()
-}
-
-fn alt_left_elbow(left_x : Int, pad : Int, entry_y : Int, branch_y : Int, radius : Int) -> String {
-  let effective = clamp_radius(radius, pad - left_x, branch_y - entry_y)
-  let sb = StringBuilder::new()
-  sb.write_string("M ")
-  sb.write_string(left_x.to_string())
-  sb.write_string(" ")
-  sb.write_string(branch_y.to_string())
-  sb.write_string(" L ")
-  sb.write_string((pad - effective).to_string())
-  sb.write_string(" ")
-  sb.write_string(branch_y.to_string())
-  sb.write_string(" Q ")
-  sb.write_string(pad.to_string())
-  sb.write_string(" ")
-  sb.write_string(branch_y.to_string())
-  sb.write_string(" ")
-  sb.write_string(pad.to_string())
-  sb.write_string(" ")
-  let dir = if branch_y >= entry_y { -effective } else { effective }
-  sb.write_string((branch_y + dir).to_string())
-  sb.write_string(" L ")
-  sb.write_string(pad.to_string())
-  sb.write_string(" ")
-  sb.write_string(entry_y.to_string())
-  sb.to_string()
-}
-
-fn alt_right_elbow(right_x : Int, child_right : Int, entry_y : Int, branch_y : Int, radius : Int) -> String {
-  let effective = clamp_radius(radius, right_x - child_right, branch_y - entry_y)
-  let sb = StringBuilder::new()
-  sb.write_string("M ")
-  sb.write_string(child_right.to_string())
-  sb.write_string(" ")
-  sb.write_string(branch_y.to_string())
-  sb.write_string(" L ")
-  sb.write_string((right_x - effective).to_string())
-  sb.write_string(" ")
-  sb.write_string(branch_y.to_string())
-  sb.write_string(" Q ")
-  sb.write_string(right_x.to_string())
-  sb.write_string(" ")
-  sb.write_string(branch_y.to_string())
-  sb.write_string(" ")
-  sb.write_string(right_x.to_string())
-  sb.write_string(" ")
-  let dir = if branch_y >= entry_y { -effective } else { effective }
-  sb.write_string((branch_y + dir).to_string())
-  sb.write_string(" L ")
-  sb.write_string(right_x.to_string())
   sb.write_string(" ")
   sb.write_string(entry_y.to_string())
   sb.to_string()
