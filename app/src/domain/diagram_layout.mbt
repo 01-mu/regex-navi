@@ -201,7 +201,11 @@ fn layout_repeat(inner : RegexNode, kind : RepeatKind) -> Diagram {
     Range(min, max) => {
       // 回数指定のラベルを追加
       let label = range_label(min, max)
-      add_label(shapes, width / 2, label_top_y(bypass_y), label)
+      if min == 0 {
+        add_label(shapes, width / 2, label_top_y(bypass_y), label)
+      } else {
+        add_label(shapes, width / 2, label_bottom_y(loop_y, height), label)
+      }
     }
     Optional => {
       ()
@@ -313,11 +317,11 @@ fn range_label(min : Int, max : Int?) -> String {
   match max {
     Some(value) =>
       if value == min {
-        "{" + min.to_string() + "}"
+        min.to_string() + "回"
       } else {
-        "{" + min.to_string() + "," + value.to_string() + "}"
+        min.to_string() + "〜" + value.to_string() + "回"
       }
-    None => "{" + min.to_string() + ",}"
+    None => min.to_string() + "回以上"
   }
 }
 
@@ -328,8 +332,8 @@ fn label_top_y(bypass_y : Int) -> Int {
 }
 
 fn label_bottom_y(loop_y : Int, height : Int) -> Int {
-  let candidate = loop_y + 18
-  let max_y = height - 6
+  let candidate = loop_y + 30
+  let max_y = height - 2
   if candidate > max_y { max_y } else { candidate }
 }
 
