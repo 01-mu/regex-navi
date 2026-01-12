@@ -53,7 +53,6 @@ body {
 }
 
 .hero h1 {
-  font-family: "Zen Kurenaido", "Hiragino Kaku Gothic ProN", sans-serif;
   font-size: 34px;
   margin: 0;
   letter-spacing: 0.04em;
@@ -163,6 +162,44 @@ button.example:hover {
 .svg-wrap svg {
   max-width: 100%;
   height: auto;
+}
+
+.support {
+  margin-top: 28px;
+  padding: 20px;
+  border: 3px solid var(--panel-edge);
+  background: #fef4d6;
+  box-shadow: 8px 8px 0 var(--panel-shadow);
+}
+
+.support h2 {
+  margin: 0 0 14px;
+  font-size: 18px;
+}
+
+.support-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 12px;
+}
+
+.support-card {
+  border: 3px solid var(--panel-edge);
+  background: #fffdf4;
+  padding: 12px;
+  box-shadow: 4px 4px 0 var(--panel-shadow);
+}
+
+.support-card p {
+  margin: 6px 0 0;
+  font-size: 12px;
+  color: var(--ink-2);
+}
+
+.support-token {
+  font-family: "IBM Plex Mono", "Menlo", "SFMono-Regular", monospace;
+  font-size: 14px;
+  font-weight: 700;
 }
 
 @media (max-width: 900px) {
