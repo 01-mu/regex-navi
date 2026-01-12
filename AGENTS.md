@@ -31,6 +31,7 @@ Run commands from `app/`.
 - History shows short, imperative subjects, sometimes Conventional Commits (e.g., `fix:`). Follow that style.
 - PRs should include: summary, manual test steps, and UI screenshots/gifs for visual changes.
 - Link related issues when available.
+- Jujutsu の change は必ず description を付ける（作業開始時に `jj describe` で更新）。
 
 ## Security & Configuration Tips
 - Do not commit secrets. Prefer `.env.example` with placeholders if config is needed.
