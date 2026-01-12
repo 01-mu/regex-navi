@@ -17,9 +17,9 @@
   --input-bg: #e6fff6;
   --error-bg: #ffe1ec;
   --svg-bg: #f1f6ff;
-  --rail-line: #111827;
-  --rail-box: #ffe66d;
-  --rail-text: #151515;
+  --rail-line: #1f2937;
+  --rail-box: #ffe36e;
+  --rail-text: #111827;
 }
 
 *,
@@ -98,6 +98,13 @@ input.regex-input {
   font-size: 16px;
   background: var(--input-bg);
   box-shadow: 4px 4px 0 var(--panel-shadow);
+}
+
+input.regex-input:focus {
+  outline: 0;
+  border-color: var(--accent-1);
+  border-width: 4px;
+  box-shadow: 8px 8px 0 var(--panel-shadow);
 }
 
 .hint {

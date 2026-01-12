@@ -28,7 +28,7 @@
 }
 
 .rr-marker {
-  fill: var(--accent-4);
+  fill: #ff5c7a;
   stroke: var(--rail-line);
   stroke-width: 3;
   stroke-linejoin: miter;
