@@ -202,8 +202,8 @@ priv enum Shape {
   Line(Int, Int, Int, Int, String)
   Rect(Int, Int, Int, Int, String)
   Text(Int, Int, String, String)
-  // 曲線パスはそのまま保持する
-  Path(String, String)
+  // 曲線パスは平行移動も保持する
+  Path(String, String, Int, Int)
 }
 
 priv struct Diagram {
@@ -355,7 +355,7 @@ fn layout_repeat(inner : RegexNode, kind : RepeatKind) -> Diagram {
   if allow_bypass {
     let bypass_y = loop_gap / 2
     // Optional/ZeroOrMore のバイパスを丸角にする
-    shapes.push(Path(bypass_path(width, entry_y, bypass_y), "rr-line"))
+    shapes.push(Path(bypass_path(width, entry_y, bypass_y), "rr-line", 0, 0))
   }
   let allow_loop = match kind {
     OneOrMore => true
@@ -365,7 +365,7 @@ fn layout_repeat(inner : RegexNode, kind : RepeatKind) -> Diagram {
   if allow_loop {
     let loop_y = height - loop_gap / 2
     // 繰り返しループを丸角で描画
-    shapes.push(Path(loop_path(pad, pad + child.width, entry_y, loop_y), "rr-line"))
+    shapes.push(Path(loop_path(pad, pad + child.width, entry_y, loop_y), "rr-line", 0, 0))
   }
   { width, height, entry_y, exit_y: entry_y, shapes }
 }
@@ -469,7 +469,7 @@ fn offset_shapes(shapes : Array[Shape], dx : Int, dy : Int) -> Array[Shape] {
         result.push(Line(x1 + dx, y1 + dy, x2 + dx, y2 + dy, class_))
       Rect(x, y, w, h, class_) => result.push(Rect(x + dx, y + dy, w, h, class_))
       Text(x, y, text, class_) => result.push(Text(x + dx, y + dy, text, class_))
-      Path(d, class_) => result.push(Path(d, class_))
+      Path(d, class_, ox, oy) => result.push(Path(d, class_, ox + dx, oy + dy))
     }
   }
   result
@@ -490,8 +490,13 @@ fn shape_to_svg(shape : Shape) -> String {
       "\" y=\"" + y.to_string() +
       "\" text-anchor=\"middle\" dominant-baseline=\"middle\">" +
       escape_xml(text) + "</text>"
-    Path(d, class_) =>
-      "<path class=\"" + class_ + "\" d=\"" + d + "\" />"
+    Path(d, class_, dx, dy) =>
+      if dx == 0 && dy == 0 {
+        "<path class=\"" + class_ + "\" d=\"" + d + "\" />"
+      } else {
+        "<path class=\"" + class_ + "\" d=\"" + d + "\" transform=\"translate(" +
+        dx.to_string() + " " + dy.to_string() + ")\" />"
+      }
   }
 }
 
