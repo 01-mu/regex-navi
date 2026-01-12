@@ -5,7 +5,7 @@ This directory collects project documentation and long-form notes.
 ## Primary References
 - `AGENTS.md`: contributor guide and repository-wide expectations.
 
-## Planned Docs
+## Docs
 - `docs/overview.md`: product purpose, target users, and feature scope.
 - `docs/architecture.md`: MoonBit/Vite build flow and module boundaries.
 - `docs/regex-support.md`: supported regex syntax and known limitations.
