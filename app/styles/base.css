@@ -1,0 +1,167 @@
+@import url("https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@500;700&family=Kosugi+Maru&family=Zen+Kurenaido&display=swap");
+
+:root {
+  color-scheme: light;
+  --bg-1: #e8f1ff;
+  --bg-2: #dbe9ff;
+  --ink-1: #151515;
+  --ink-2: #2d2d2d;
+  --accent-1: #2563eb;
+  --accent-2: #0ea5e9;
+  --panel: #f7fbff;
+  --panel-edge: #151515;
+  --panel-shadow: #151515;
+  --rail-line: #111827;
+  --rail-box: #e6f0ff;
+  --rail-text: #151515;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: "Kosugi Maru", "Hiragino Kaku Gothic ProN", "Noto Sans JP", sans-serif;
+  color: var(--ink-1);
+  background:
+    linear-gradient(135deg, #c7ddff 0%, #b6ccff 35%, #a5e1ff 70%, #e8f1ff 100%),
+    repeating-linear-gradient(
+      45deg,
+      rgba(17, 24, 39, 0.06),
+      rgba(17, 24, 39, 0.06) 8px,
+      rgba(247, 251, 255, 0.2) 8px,
+      rgba(247, 251, 255, 0.2) 16px
+    );
+  min-height: 100vh;
+}
+
+.app {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 32px 20px 48px;
+}
+
+.hero {
+  display: grid;
+  gap: 10px;
+  margin-bottom: 28px;
+  padding: 18px 20px;
+  border: 3px solid var(--ink-1);
+  background: #f7fbff;
+  box-shadow: 6px 6px 0 var(--panel-shadow);
+}
+
+.hero h1 {
+  font-family: "Zen Kurenaido", "Hiragino Kaku Gothic ProN", sans-serif;
+  font-size: 34px;
+  margin: 0;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.hero p {
+  margin: 0;
+  color: var(--ink-2);
+}
+
+.layout {
+  display: grid;
+  grid-template-columns: minmax(260px, 1fr) minmax(360px, 1.4fr);
+  gap: 20px;
+}
+
+.panel {
+  background: var(--panel);
+  border: 3px solid var(--panel-edge);
+  border-radius: 0;
+  padding: 20px;
+  box-shadow: 8px 8px 0 var(--panel-shadow);
+}
+
+.panel h2 {
+  margin: 0 0 12px;
+  font-size: 18px;
+}
+
+.input-row {
+  display: grid;
+  gap: 12px;
+}
+
+input.regex-input {
+  width: 100%;
+  padding: 14px 16px;
+  border-radius: 0;
+  border: 3px solid var(--panel-edge);
+  font-family: "IBM Plex Mono", "Menlo", "SFMono-Regular", monospace;
+  font-size: 16px;
+  background: #fffdf5;
+  box-shadow: 4px 4px 0 var(--panel-shadow);
+}
+
+.hint {
+  font-size: 12px;
+  color: var(--ink-2);
+}
+
+.example-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+button.example {
+  border: 3px solid var(--panel-edge);
+  background: #ffffff;
+  border-radius: 0;
+  padding: 6px 12px;
+  font-size: 12px;
+  cursor: pointer;
+  box-shadow: 3px 3px 0 var(--panel-shadow);
+}
+
+button.example:hover {
+  border-color: var(--accent-1);
+  color: var(--accent-1);
+  transform: translate(-2px, -2px);
+  box-shadow: 5px 5px 0 var(--panel-shadow);
+}
+
+.error {
+  margin-top: 8px;
+  padding: 12px 14px;
+  border-radius: 0;
+  background: #dbe9ff;
+  border: 3px solid #151515;
+  color: #151515;
+  font-size: 13px;
+  white-space: pre-wrap;
+  box-shadow: 4px 4px 0 #151515;
+}
+
+.svg-wrap {
+  width: 100%;
+  min-height: 260px;
+  display: grid;
+  place-items: center;
+  border-radius: 0;
+  border: 3px dashed #151515;
+  background: #f7fbff;
+  overflow: auto;
+  padding: 16px;
+  box-shadow: 6px 6px 0 #151515;
+}
+
+.svg-wrap svg {
+  max-width: 100%;
+  height: auto;
+}
+
+@media (max-width: 900px) {
+  .layout {
+    grid-template-columns: 1fr;
+  }
+}

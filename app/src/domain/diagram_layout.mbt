@@ -56,6 +56,7 @@ fn layout_concat(nodes : Array[RegexNode]) -> Diagram {
     return layout(nodes[0])
   }
   let gap = 20
+  let edge_gap = 3
   let layouts : Array[Diagram] = []
   let mut height = 0
   for node in nodes {
@@ -74,8 +75,8 @@ fn layout_concat(nodes : Array[RegexNode]) -> Diagram {
     let child_y = center_y - child.entry_y
     append_shapes(shapes, offset_shapes(child.shapes, x, child_y))
     if i > 0 {
-      let line_start = x - gap
-      let line_end = x
+      let line_start = x - gap + edge_gap
+      let line_end = x - edge_gap
       shapes.push(Line(line_start, center_y, line_end, center_y, "rr-line"))
     }
     x = x + child.width
@@ -94,6 +95,7 @@ fn layout_alt(nodes : Array[RegexNode]) -> Diagram {
   }
   let gap = 20
   let pad = 20
+  let edge_gap = 3
   let join_gap = pad
   let layouts : Array[Diagram] = []
   let mut max_width = 0
@@ -131,9 +133,9 @@ fn layout_alt(nodes : Array[RegexNode]) -> Diagram {
     // 右端の合流線と箱が重ならないよう余白を作る
     append_shapes(shapes, offset_shapes(child.shapes, pad, child_y))
     // 分岐は背骨から水平に接続して視認性を優先
-    shapes.push(Line(left_x, branch_y, pad, branch_y, "rr-line"))
+    shapes.push(Line(left_x, branch_y, pad - edge_gap, branch_y, "rr-line"))
     // 左側と同じ距離で合流させる
-    shapes.push(Line(pad + child.width, branch_y, right_x, branch_y, "rr-line"))
+    shapes.push(Line(pad + child.width + edge_gap, branch_y, right_x, branch_y, "rr-line"))
     y = y + child.height + gap
   }
   shapes.push(Line(left_x, top_branch, left_x, bottom_branch, "rr-line"))
@@ -144,14 +146,15 @@ fn layout_alt(nodes : Array[RegexNode]) -> Diagram {
 fn layout_repeat(inner : RegexNode, kind : RepeatKind) -> Diagram {
   let child = layout(inner)
   let pad = 20
+  let edge_gap = 3
   let loop_gap = 18
   let width = child.width + pad * 2
   let height = child.height + loop_gap * 2
   let entry_y = loop_gap + child.entry_y
   let shapes : Array[Shape] = []
   append_shapes(shapes, offset_shapes(child.shapes, pad, loop_gap))
-  shapes.push(Line(0, entry_y, pad, entry_y, "rr-line"))
-  shapes.push(Line(pad + child.width, entry_y, width, entry_y, "rr-line"))
+  shapes.push(Line(0, entry_y, pad - edge_gap, entry_y, "rr-line"))
+  shapes.push(Line(pad + child.width + edge_gap, entry_y, width, entry_y, "rr-line"))
   let allow_bypass = match kind {
     Optional => true
     ZeroOrMore => true

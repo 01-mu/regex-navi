@@ -1,0 +1,28 @@
+.rr-line {
+  stroke: var(--rail-line);
+  stroke-width: 3;
+  fill: none;
+  stroke-linecap: square;
+  stroke-linejoin: miter;
+}
+
+.rr-box {
+  fill: var(--rail-box);
+  stroke: var(--rail-line);
+  stroke-width: 3;
+  filter: drop-shadow(2px 2px 0 #111827);
+}
+
+.rr-text {
+  fill: var(--rail-text);
+  font-family: "IBM Plex Mono", "Menlo", "SFMono-Regular", monospace;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.rr-label {
+  fill: var(--accent-2);
+  font-family: "IBM Plex Mono", "Menlo", "SFMono-Regular", monospace;
+  font-size: 12px;
+  font-weight: 700;
+}
