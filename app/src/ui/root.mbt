@@ -6,18 +6,18 @@ pub fn build_root(
   svg_ref : @signal.Signal[@js_dom.Element?],
 ) -> @dom.DomNode {
   let examples = [
-    "ab(c|d)*",
-    "(foo|bar)baz",
+    "^hello$",
     "https?://[a-z]+",
     "colou?r",
-    "^hello$",
-    "a+b+c+",
+    "(foo|bar)baz",
+    "ab(c|d)+",
+    "ab(c|d)*",
     "ab{2,4}c",
-    "(ab|cd)+",
     "file\\.(png|jpg)",
     "[a-z]{3,6}\\d?",
+    "v1\\.2\\.3",
+    "a.+b",
   ]
-
   @dom.div(class="app", [
     @dom.div(class="hero", [
       @dom.h1([@dom.text("正規表現ナビ")]),
