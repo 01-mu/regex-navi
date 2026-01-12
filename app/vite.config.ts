@@ -1,9 +1,9 @@
 import { defineConfig } from "vite";
-import { moonbitPlugin } from "vite-plugin-moonbit";
+import moonbit from "vite-plugin-moonbit";
 
 export default defineConfig({
   plugins: [
-    moonbitPlugin({
+    moonbit({
       watch: true,
       showLogs: true,
     }),
