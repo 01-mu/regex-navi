@@ -1,18 +1,19 @@
-@import url("https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=Shippori+Mincho:wght@500&family=Zen+Maru+Gothic:wght@400;500;700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@500;700&family=Kosugi+Maru&family=Zen+Kurenaido&display=swap");
 
 :root {
   color-scheme: light;
-  --bg-1: #f2efe7;
-  --bg-2: #f9f4ea;
-  --ink-1: #1f1b16;
-  --ink-2: #5b4d41;
-  --accent-1: #d17a3a;
-  --accent-2: #2e6b8c;
-  --panel: #ffffffcc;
-  --panel-edge: #c9b9a8;
-  --rail-line: #2c2a28;
-  --rail-box: #fff7e6;
-  --rail-text: #1f1b16;
+  --bg-1: #f7f4ec;
+  --bg-2: #fef8e4;
+  --ink-1: #151515;
+  --ink-2: #2d2d2d;
+  --accent-1: #ff7a00;
+  --accent-2: #1d4ed8;
+  --panel: #fffdf5;
+  --panel-edge: #151515;
+  --panel-shadow: #151515;
+  --rail-line: #151515;
+  --rail-box: #fff1d6;
+  --rail-text: #151515;
 }
 
 *,
@@ -23,12 +24,17 @@
 
 body {
   margin: 0;
-  font-family: "Zen Maru Gothic", "Hiragino Kaku Gothic ProN", "Noto Sans JP", sans-serif;
+  font-family: "Kosugi Maru", "Hiragino Kaku Gothic ProN", "Noto Sans JP", sans-serif;
   color: var(--ink-1);
   background:
-    radial-gradient(1200px 800px at 15% 10%, #fce9d2 0%, transparent 55%),
-    radial-gradient(1000px 700px at 85% 15%, #dbe8f3 0%, transparent 55%),
-    linear-gradient(135deg, var(--bg-1), var(--bg-2));
+    linear-gradient(135deg, #ffe27a 0%, #ffd2e1 35%, #c7f0ff 70%, #f7f4ec 100%),
+    repeating-linear-gradient(
+      45deg,
+      rgba(21, 21, 21, 0.06),
+      rgba(21, 21, 21, 0.06) 8px,
+      rgba(255, 255, 255, 0.2) 8px,
+      rgba(255, 255, 255, 0.2) 16px
+    );
   min-height: 100vh;
 }
 
@@ -40,15 +46,20 @@ body {
 
 .hero {
   display: grid;
-  gap: 8px;
-  margin-bottom: 24px;
+  gap: 10px;
+  margin-bottom: 28px;
+  padding: 18px 20px;
+  border: 3px solid var(--ink-1);
+  background: #ffffff;
+  box-shadow: 6px 6px 0 var(--panel-shadow);
 }
 
 .hero h1 {
-  font-family: "Shippori Mincho", "Hiragino Mincho ProN", serif;
-  font-size: 32px;
+  font-family: "Zen Kurenaido", "Hiragino Kaku Gothic ProN", sans-serif;
+  font-size: 34px;
   margin: 0;
-  letter-spacing: 0.02em;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
 }
 
 .hero p {
@@ -64,11 +75,10 @@ body {
 
 .panel {
   background: var(--panel);
-  border: 1px solid var(--panel-edge);
-  border-radius: 18px;
-  padding: 18px;
-  backdrop-filter: blur(6px);
-  box-shadow: 0 12px 30px rgba(31, 27, 22, 0.12);
+  border: 3px solid var(--panel-edge);
+  border-radius: 0;
+  padding: 20px;
+  box-shadow: 8px 8px 0 var(--panel-shadow);
 }
 
 .panel h2 {
@@ -83,12 +93,13 @@ body {
 
 input.regex-input {
   width: 100%;
-  padding: 12px 14px;
-  border-radius: 12px;
-  border: 1px solid var(--panel-edge);
+  padding: 14px 16px;
+  border-radius: 0;
+  border: 3px solid var(--panel-edge);
   font-family: "IBM Plex Mono", "Menlo", "SFMono-Regular", monospace;
   font-size: 16px;
-  background: #fffdfa;
+  background: #fffdf5;
+  box-shadow: 4px 4px 0 var(--panel-shadow);
 }
 
 .hint {
@@ -103,28 +114,32 @@ input.regex-input {
 }
 
 button.example {
-  border: 1px solid var(--panel-edge);
-  background: #fffaf0;
-  border-radius: 999px;
+  border: 3px solid var(--panel-edge);
+  background: #ffffff;
+  border-radius: 0;
   padding: 6px 12px;
   font-size: 12px;
   cursor: pointer;
+  box-shadow: 3px 3px 0 var(--panel-shadow);
 }
 
 button.example:hover {
   border-color: var(--accent-1);
   color: var(--accent-1);
+  transform: translate(-2px, -2px);
+  box-shadow: 5px 5px 0 var(--panel-shadow);
 }
 
 .error {
   margin-top: 8px;
-  padding: 10px 12px;
-  border-radius: 12px;
-  background: #fff0f0;
-  border: 1px solid #e4a2a2;
-  color: #9a2c2c;
+  padding: 12px 14px;
+  border-radius: 0;
+  background: #ffe4e4;
+  border: 3px solid #151515;
+  color: #151515;
   font-size: 13px;
   white-space: pre-wrap;
+  box-shadow: 4px 4px 0 #151515;
 }
 
 .svg-wrap {
@@ -132,11 +147,12 @@ button.example:hover {
   min-height: 260px;
   display: grid;
   place-items: center;
-  border-radius: 14px;
-  border: 1px dashed #c8b7a6;
-  background: #fff;
+  border-radius: 0;
+  border: 3px dashed #151515;
+  background: #fffdf5;
   overflow: auto;
   padding: 16px;
+  box-shadow: 6px 6px 0 #151515;
 }
 
 .svg-wrap svg {
@@ -146,7 +162,7 @@ button.example:hover {
 
 .rr-line {
   stroke: var(--rail-line);
-  stroke-width: 2;
+  stroke-width: 2.4;
   fill: none;
   stroke-linecap: round;
   stroke-linejoin: round;
@@ -155,7 +171,7 @@ button.example:hover {
 .rr-box {
   fill: var(--rail-box);
   stroke: var(--rail-line);
-  stroke-width: 2;
+  stroke-width: 2.4;
 }
 
 .rr-text {
@@ -168,6 +184,7 @@ button.example:hover {
   fill: var(--accent-2);
   font-family: "IBM Plex Mono", "Menlo", "SFMono-Regular", monospace;
   font-size: 12px;
+  font-weight: 700;
 }
 
 @media (max-width: 900px) {
