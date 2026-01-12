@@ -191,8 +191,11 @@ fn layout_repeat(inner : RegexNode, kind : RepeatKind) -> Diagram {
       OneOrMore => 14
       _ => 8
     }
+    // 補足ラベルが付くループだけ波線にする
     let loop_class = match kind {
-      OneOrMore => "rr-loop-soft"
+      OneOrMore => "rr-repeat-soft"
+      ZeroOrMore => "rr-repeat-soft"
+      Range(_, _) => "rr-repeat-line"
       _ => "rr-line"
     }
     shapes.push(Path(loop_path(pad, pad + child.width, entry_y, loop_y, loop_radius), loop_class, 0, 0))
