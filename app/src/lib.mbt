@@ -16,13 +16,12 @@ priv enum RegexNode {
 }
 
 priv struct Parser {
-  input : String
   chars : Array[Char]
   mut pos : Int
 }
 
 fn Parser::new(input : String) -> Parser {
-  { input, chars: input.to_array(), pos: 0 }
+  { chars: input.to_array(), pos: 0 }
 }
 
 fn Parser::eof(self : Parser) -> Bool {
@@ -73,7 +72,7 @@ fn parse_regex(input : String) -> Result[RegexNode, String] {
 }
 
 fn parse_alt(parser : Parser) -> Result[RegexNode, String] {
-  let mut nodes : Array[RegexNode] = []
+  let nodes : Array[RegexNode] = []
   match parse_concat(parser) {
     Ok(node) => nodes.push(node)
     Err(msg) => return Err(msg)
@@ -92,7 +91,7 @@ fn parse_alt(parser : Parser) -> Result[RegexNode, String] {
 }
 
 fn parse_concat(parser : Parser) -> Result[RegexNode, String] {
-  let mut nodes : Array[RegexNode] = []
+  let nodes : Array[RegexNode] = []
   while true {
     match parser.peek() {
       None => break
@@ -173,7 +172,7 @@ fn parse_escape(parser : Parser) -> Result[RegexNode, String] {
 
 fn parse_char_class(parser : Parser) -> Result[RegexNode, String] {
   parser.next() |> ignore
-  let mut buf : Array[Char] = []
+  let buf : Array[Char] = []
   while true {
     match parser.next() {
       None => return Err("Unterminated character class")
@@ -253,7 +252,7 @@ fn layout_concat(nodes : Array[RegexNode]) -> Diagram {
     return layout(nodes[0])
   }
   let gap = 20
-  let mut layouts : Array[Diagram] = []
+  let layouts : Array[Diagram] = []
   let mut height = 0
   for node in nodes {
     let child = layout(node)
@@ -263,7 +262,7 @@ fn layout_concat(nodes : Array[RegexNode]) -> Diagram {
     layouts.push(child)
   }
   let center_y = height / 2
-  let mut shapes : Array[Shape] = []
+  let shapes : Array[Shape] = []
   let mut x = 0
   let mut i = 0
   while i < layouts.length() {
@@ -291,7 +290,7 @@ fn layout_alt(nodes : Array[RegexNode]) -> Diagram {
   }
   let gap = 20
   let pad = 20
-  let mut layouts : Array[Diagram] = []
+  let layouts : Array[Diagram] = []
   let mut max_width = 0
   let mut total_height = 0
   for node in nodes {
@@ -310,7 +309,7 @@ fn layout_alt(nodes : Array[RegexNode]) -> Diagram {
   let entry_y = total_height / 2
   let left_x = 0
   let right_x = pad + max_width
-  let mut shapes : Array[Shape] = []
+  let shapes : Array[Shape] = []
   let mut y = 0
   let mut top_branch = 0
   let mut bottom_branch = 0
@@ -341,17 +340,27 @@ fn layout_repeat(inner : RegexNode, kind : RepeatKind) -> Diagram {
   let width = child.width + pad * 2
   let height = child.height + loop_gap * 2
   let entry_y = loop_gap + child.entry_y
-  let mut shapes : Array[Shape] = []
+  let shapes : Array[Shape] = []
   append_shapes(shapes, offset_shapes(child.shapes, pad, loop_gap))
   shapes.push(Line(0, entry_y, pad, entry_y, "rr-line"))
   shapes.push(Line(pad + child.width, entry_y, width, entry_y, "rr-line"))
-  if kind == Optional || kind == ZeroOrMore {
+  let allow_bypass = match kind {
+    Optional => true
+    ZeroOrMore => true
+    _ => false
+  }
+  if allow_bypass {
     let bypass_y = loop_gap / 2
     shapes.push(Line(0, entry_y, 0, bypass_y, "rr-line"))
     shapes.push(Line(0, bypass_y, width, bypass_y, "rr-line"))
     shapes.push(Line(width, bypass_y, width, entry_y, "rr-line"))
   }
-  if kind == OneOrMore || kind == ZeroOrMore {
+  let allow_loop = match kind {
+    OneOrMore => true
+    ZeroOrMore => true
+    _ => false
+  }
+  if allow_loop {
     let loop_y = height - loop_gap / 2
     shapes.push(Line(pad + child.width, entry_y, pad + child.width, loop_y, "rr-line"))
     shapes.push(Line(pad + child.width, loop_y, pad, loop_y, "rr-line"))
@@ -448,7 +457,7 @@ fn main {
   let pattern = @signal.signal("a(b|c)*")
   let error = @signal.signal("")
   let svg = @signal.signal("")
-  let svg_ref : Ref[@js_dom.Element?] = { val: None }
+  let svg_ref : @signal.Signal[@js_dom.Element?] = @signal.signal(None)
 
   let _ = @signal.effect(fn() {
     let current = pattern.get()
@@ -471,7 +480,7 @@ fn main {
   })
 
   let _ = @signal.effect(fn() {
-    match svg_ref.val {
+    match svg_ref.get() {
       Some(el) => el.setInnerHTML(svg.get())
       None => ()
     }
@@ -530,7 +539,7 @@ fn main {
             @dom.h2([@dom.text("Rail Diagram")]),
             @dom.div(
               class="svg-wrap",
-              ref_=fn(el) { svg_ref.val = Some(el) },
+              ref_=fn(el) { svg_ref.set(Some(el)) },
               [],
             ),
           ]),
