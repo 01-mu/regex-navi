@@ -4,6 +4,7 @@ pub enum Shape {
   Line(Int, Int, Int, Int, String)
   Rect(Int, Int, Int, Int, String)
   Text(Int, Int, String, String)
+  Circle(Int, Int, Int, String)
   // 曲線パスは平行移動も保持する
   Path(String, String, Int, Int)
 }
@@ -305,6 +306,7 @@ pub fn offset_shapes(shapes : Array[Shape], dx : Int, dy : Int) -> Array[Shape] 
         result.push(Line(x1 + dx, y1 + dy, x2 + dx, y2 + dy, class_))
       Rect(x, y, w, h, class_) => result.push(Rect(x + dx, y + dy, w, h, class_))
       Text(x, y, text, class_) => result.push(Text(x + dx, y + dy, text, class_))
+      Circle(cx, cy, r, class_) => result.push(Circle(cx + dx, cy + dy, r, class_))
       Path(d, class_, ox, oy) => result.push(Path(d, class_, ox + dx, oy + dy))
     }
   }
