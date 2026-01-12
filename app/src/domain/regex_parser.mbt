@@ -15,6 +15,12 @@ pub enum RegexNode {
   Repeat(RegexNode, RepeatKind)
 }
 
+///|
+/// 空ノードの生成
+pub fn empty_node() -> RegexNode {
+  Empty
+}
+
 struct Parser {
   chars : Array[Char]
   mut pos : Int

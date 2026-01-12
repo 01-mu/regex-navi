@@ -10,6 +10,7 @@ This directory collects project documentation and long-form notes.
 - `docs/architecture.md`: MoonBit/Vite build flow and module boundaries.
 - `docs/regex-support.md`: supported regex syntax and known limitations.
 - `docs/ui-style.md`: visual direction, typography, and component guidelines.
+- `docs/lunaui-structure.md`: pragmatic LunaUI directory layout and flow.
 
 ## Add New Docs
 - Add new markdown files here and link them from this index.
