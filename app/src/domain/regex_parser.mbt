@@ -137,11 +137,36 @@ fn parse_concat(parser : Parser) -> Result[RegexNode, String] {
   }
   if nodes.is_empty() {
     Ok(Empty)
-  } else if nodes.length() == 1 {
-    Ok(nodes[0])
   } else {
-    Ok(Concat(nodes))
+    let merged = merge_literals(nodes)
+    if merged.length() == 1 {
+      Ok(merged[0])
+    } else {
+      Ok(Concat(merged))
+    }
   }
+}
+
+// 連続するリテラルをまとめて1つのボックスにする
+fn merge_literals(nodes : Array[RegexNode]) -> Array[RegexNode] {
+  let merged : Array[RegexNode] = []
+  let mut buffer = ""
+  for node in nodes {
+    match node {
+      Literal(text) => buffer = buffer + text
+      _ => {
+        if not(buffer.is_empty()) {
+          merged.push(Literal(buffer))
+          buffer = ""
+        }
+        merged.push(node)
+      }
+    }
+  }
+  if not(buffer.is_empty()) {
+    merged.push(Literal(buffer))
+  }
+  merged
 }
 
 fn parse_repeat(parser : Parser) -> Result[RegexNode, String] {
