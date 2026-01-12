@@ -18,6 +18,20 @@ pub fn build_root(
     "v1\\.2\\.3",
     "a.+b",
   ]
+  let support_items = [
+    ("( ... )", "まとまりとして扱い、量指定や分岐の対象にする"),
+    ("連結", "隣り合った要素を順にマッチさせる（例: ab, (ab)c）"),
+    ("|", "どちらかのパターンに分岐する"),
+    ("?", "0回または1回"),
+    ("+", "1回以上"),
+    ("*", "0回以上"),
+    ("{m,n}", "m回からn回まで（{m} や {m,} も可）"),
+    (".", "任意の1文字"),
+    ("^", "入力の先頭に一致"),
+    ("$", "入力の末尾に一致"),
+    ("[ ... ]", "文字クラス（中のいずれか1文字）"),
+    ("\\\\", "メタ文字をエスケープして扱う"),
+  ]
   @dom.div(class="app", [
     @dom.div(class="hero", [
       @dom.h1([@dom.text("正規表現ナビ")]),
@@ -40,9 +54,6 @@ pub fn build_root(
               pattern.set(input.value)
             }),
           ),
-          @dom.p(class="hint", [
-            @dom.text("対応: (), 連結, |, ?, +, *, {m,n}, ., ^, $, 文字クラス, \\\\ エスケープ"),
-          ]),
           @dom.div(class="example-row", examples.map(fn(value) {
             @dom.button(
               class="example",
@@ -65,6 +76,16 @@ pub fn build_root(
           [],
         ),
       ]),
+    ]),
+    @dom.section(class="support", [
+      @dom.h2([@dom.text("正規表現ガイド")]),
+      @dom.div(class="support-grid", support_items.map(fn(item) {
+        let (token, desc) = item
+        @dom.div(class="support-card", [
+          @dom.div(class="support-token", [@dom.text(token)]),
+          @dom.p([@dom.text(desc)]),
+        ])
+      })),
     ]),
   ])
 }
