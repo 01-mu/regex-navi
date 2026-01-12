@@ -202,6 +202,8 @@ priv enum Shape {
   Line(Int, Int, Int, Int, String)
   Rect(Int, Int, Int, Int, String)
   Text(Int, Int, String, String)
+  // 曲線パスはそのまま保持する
+  Path(String, String)
 }
 
 priv struct Diagram {
@@ -290,6 +292,7 @@ fn layout_alt(nodes : Array[RegexNode]) -> Diagram {
   }
   let gap = 20
   let pad = 20
+  let elbow = 10
   let layouts : Array[Diagram] = []
   let mut max_width = 0
   let mut total_height = 0
@@ -324,8 +327,9 @@ fn layout_alt(nodes : Array[RegexNode]) -> Diagram {
       bottom_branch = branch_y
     }
     append_shapes(shapes, offset_shapes(child.shapes, pad, child_y))
-    shapes.push(Line(left_x, branch_y, pad, branch_y, "rr-line"))
-    shapes.push(Line(pad + child.width, branch_y, right_x, branch_y, "rr-line"))
+    // 分岐の入口/出口を丸角で接続
+    shapes.push(Path(alt_left_elbow(left_x, pad, entry_y, branch_y, elbow), "rr-line"))
+    shapes.push(Path(alt_right_elbow(right_x, pad + child.width, entry_y, branch_y, elbow), "rr-line"))
     y = y + child.height + gap
   }
   shapes.push(Line(left_x, top_branch, left_x, bottom_branch, "rr-line"))
@@ -351,9 +355,8 @@ fn layout_repeat(inner : RegexNode, kind : RepeatKind) -> Diagram {
   }
   if allow_bypass {
     let bypass_y = loop_gap / 2
-    shapes.push(Line(0, entry_y, 0, bypass_y, "rr-line"))
-    shapes.push(Line(0, bypass_y, width, bypass_y, "rr-line"))
-    shapes.push(Line(width, bypass_y, width, entry_y, "rr-line"))
+    // Optional/ZeroOrMore のバイパスを丸角にする
+    shapes.push(Path(bypass_path(width, entry_y, bypass_y), "rr-line"))
   }
   let allow_loop = match kind {
     OneOrMore => true
@@ -362,11 +365,149 @@ fn layout_repeat(inner : RegexNode, kind : RepeatKind) -> Diagram {
   }
   if allow_loop {
     let loop_y = height - loop_gap / 2
-    shapes.push(Line(pad + child.width, entry_y, pad + child.width, loop_y, "rr-line"))
-    shapes.push(Line(pad + child.width, loop_y, pad, loop_y, "rr-line"))
-    shapes.push(Line(pad, loop_y, pad, entry_y, "rr-line"))
+    // 繰り返しループを丸角で描画
+    shapes.push(Path(loop_path(pad, pad + child.width, entry_y, loop_y), "rr-line"))
   }
   { width, height, entry_y, exit_y: entry_y, shapes }
+}
+
+fn min_int(a : Int, b : Int) -> Int {
+  if a < b { a } else { b }
+}
+
+fn abs_int(value : Int) -> Int {
+  if value < 0 { -value } else { value }
+}
+
+fn clamp_radius(radius : Int, dx : Int, dy : Int) -> Int {
+  let limit_x = abs_int(dx) / 2
+  let limit_y = abs_int(dy) / 2
+  min_int(radius, min_int(limit_x, limit_y))
+}
+
+fn bypass_path(width : Int, entry_y : Int, bypass_y : Int) -> String {
+  let radius = clamp_radius(8, width, entry_y - bypass_y)
+  let sb = StringBuilder::new()
+  sb.write_string("M ")
+  sb.write_string("0 ")
+  sb.write_string(entry_y.to_string())
+  sb.write_string(" L 0 ")
+  sb.write_string((bypass_y + radius).to_string())
+  sb.write_string(" Q 0 ")
+  sb.write_string(bypass_y.to_string())
+  sb.write_string(" ")
+  sb.write_string(radius.to_string())
+  sb.write_string(" ")
+  sb.write_string(bypass_y.to_string())
+  sb.write_string(" L ")
+  sb.write_string((width - radius).to_string())
+  sb.write_string(" ")
+  sb.write_string(bypass_y.to_string())
+  sb.write_string(" Q ")
+  sb.write_string(width.to_string())
+  sb.write_string(" ")
+  sb.write_string(bypass_y.to_string())
+  sb.write_string(" ")
+  sb.write_string(width.to_string())
+  sb.write_string(" ")
+  sb.write_string((bypass_y + radius).to_string())
+  sb.write_string(" L ")
+  sb.write_string(width.to_string())
+  sb.write_string(" ")
+  sb.write_string(entry_y.to_string())
+  sb.to_string()
+}
+
+fn loop_path(left_x : Int, right_x : Int, entry_y : Int, loop_y : Int) -> String {
+  let radius = clamp_radius(8, right_x - left_x, loop_y - entry_y)
+  let sb = StringBuilder::new()
+  sb.write_string("M ")
+  sb.write_string(right_x.to_string())
+  sb.write_string(" ")
+  sb.write_string(entry_y.to_string())
+  sb.write_string(" L ")
+  sb.write_string(right_x.to_string())
+  sb.write_string(" ")
+  sb.write_string((loop_y - radius).to_string())
+  sb.write_string(" Q ")
+  sb.write_string(right_x.to_string())
+  sb.write_string(" ")
+  sb.write_string(loop_y.to_string())
+  sb.write_string(" ")
+  sb.write_string((right_x - radius).to_string())
+  sb.write_string(" ")
+  sb.write_string(loop_y.to_string())
+  sb.write_string(" L ")
+  sb.write_string((left_x + radius).to_string())
+  sb.write_string(" ")
+  sb.write_string(loop_y.to_string())
+  sb.write_string(" Q ")
+  sb.write_string(left_x.to_string())
+  sb.write_string(" ")
+  sb.write_string(loop_y.to_string())
+  sb.write_string(" ")
+  sb.write_string(left_x.to_string())
+  sb.write_string(" ")
+  sb.write_string((loop_y - radius).to_string())
+  sb.write_string(" L ")
+  sb.write_string(left_x.to_string())
+  sb.write_string(" ")
+  sb.write_string(entry_y.to_string())
+  sb.to_string()
+}
+
+fn alt_left_elbow(left_x : Int, pad : Int, entry_y : Int, branch_y : Int, radius : Int) -> String {
+  let effective = clamp_radius(radius, pad - left_x, branch_y - entry_y)
+  let sb = StringBuilder::new()
+  sb.write_string("M ")
+  sb.write_string(left_x.to_string())
+  sb.write_string(" ")
+  sb.write_string(branch_y.to_string())
+  sb.write_string(" L ")
+  sb.write_string((pad - effective).to_string())
+  sb.write_string(" ")
+  sb.write_string(branch_y.to_string())
+  sb.write_string(" Q ")
+  sb.write_string(pad.to_string())
+  sb.write_string(" ")
+  sb.write_string(branch_y.to_string())
+  sb.write_string(" ")
+  sb.write_string(pad.to_string())
+  sb.write_string(" ")
+  let dir = if branch_y >= entry_y { -effective } else { effective }
+  sb.write_string((branch_y + dir).to_string())
+  sb.write_string(" L ")
+  sb.write_string(pad.to_string())
+  sb.write_string(" ")
+  sb.write_string(entry_y.to_string())
+  sb.to_string()
+}
+
+fn alt_right_elbow(right_x : Int, child_right : Int, entry_y : Int, branch_y : Int, radius : Int) -> String {
+  let effective = clamp_radius(radius, right_x - child_right, branch_y - entry_y)
+  let sb = StringBuilder::new()
+  sb.write_string("M ")
+  sb.write_string(child_right.to_string())
+  sb.write_string(" ")
+  sb.write_string(branch_y.to_string())
+  sb.write_string(" L ")
+  sb.write_string((right_x - effective).to_string())
+  sb.write_string(" ")
+  sb.write_string(branch_y.to_string())
+  sb.write_string(" Q ")
+  sb.write_string(right_x.to_string())
+  sb.write_string(" ")
+  sb.write_string(branch_y.to_string())
+  sb.write_string(" ")
+  sb.write_string(right_x.to_string())
+  sb.write_string(" ")
+  let dir = if branch_y >= entry_y { -effective } else { effective }
+  sb.write_string((branch_y + dir).to_string())
+  sb.write_string(" L ")
+  sb.write_string(right_x.to_string())
+  sb.write_string(" ")
+  sb.write_string(entry_y.to_string())
+  sb.to_string()
 }
 
 fn append_shapes(target : Array[Shape], extra : Array[Shape]) -> Unit {
@@ -383,6 +524,7 @@ fn offset_shapes(shapes : Array[Shape], dx : Int, dy : Int) -> Array[Shape] {
         result.push(Line(x1 + dx, y1 + dy, x2 + dx, y2 + dy, class_))
       Rect(x, y, w, h, class_) => result.push(Rect(x + dx, y + dy, w, h, class_))
       Text(x, y, text, class_) => result.push(Text(x + dx, y + dy, text, class_))
+      Path(d, class_) => result.push(Path(d, class_))
     }
   }
   result
@@ -403,6 +545,8 @@ fn shape_to_svg(shape : Shape) -> String {
       "\" y=\"" + y.to_string() +
       "\" text-anchor=\"middle\" dominant-baseline=\"middle\">" +
       escape_xml(text) + "</text>"
+    Path(d, class_) =>
+      "<path class=\"" + class_ + "\" d=\"" + d + "\" />"
   }
 }
 
