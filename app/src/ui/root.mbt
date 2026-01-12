@@ -20,7 +20,7 @@ pub fn build_root(
       ]),
     ]),
     @dom.div(class="layout", [
-      @dom.div(class="panel", [
+      @dom.div(class="panel panel-input", [
         @dom.h2([@dom.text("入力")]),
         @dom.div(class="input-row", [
           @dom.input(
@@ -51,8 +51,8 @@ pub fn build_root(
           ),
         ]),
       ]),
-      @dom.div(class="panel", [
-        @dom.h2([@dom.text("図")]),
+      @dom.div(class="panel panel-output", [
+        @dom.h2([@dom.text("出力")]),
         @dom.div(
           class="svg-wrap",
           ref_=fn(el) { svg_ref.set(Some(el)) },
