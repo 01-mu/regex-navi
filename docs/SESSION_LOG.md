@@ -11,7 +11,12 @@ Codexセッションの文脈を引き継ぐ目的で継続的に追記します
 - 分岐線と枠線の干渉を避けるため、線端の余白を追加
 - 中断前に `docs/regex-support.md` へ未対応の記号一覧を追記
 - `docs/README.md` にセッションログへのリンクを追加
+- Cloudflare Pages へのデプロイ方針を GitHub Actions に決定
+- `.github/workflows/deploy-pages.yml` を追加（MoonBit install → build → Pages deploy）
+- リポジトリ名/README表記を `regex-navi` に変更
+- `gh repo rename` とローカルディレクトリのリネームを実施
 
 未完了:
 - SVGの線幅/影/マーカーサイズの微調整
 - 例パターンの追加や文言整理
+- Cloudflare Pages の Secrets 設定（`CLOUDFLARE_API_TOKEN` / `CLOUDFLARE_ACCOUNT_ID`）
