@@ -1,6 +1,6 @@
 // UI ビルダー
 
-pub fn build_root(
+pub fn build_app(
   pattern : @signal.Signal[String],
   error : @signal.Signal[String],
   svg_ref : @signal.Signal[@js_dom.Element?],

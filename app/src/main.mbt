@@ -36,7 +36,7 @@ fn main {
   let doc = @js_dom.document()
   match doc.getElementById("app") {
     Some(el) => {
-      let app = @ui.build_root(pattern, error, svg_ref)
+      let app = @ui.build_app(pattern, error, svg_ref)
       @dom.render(el |> @dom.DomElement::from_jsdom, app)
     }
     None => ()
