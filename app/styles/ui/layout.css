@@ -1,0 +1,38 @@
+.app {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 32px 20px 48px;
+}
+
+.layout {
+  display: grid;
+  grid-template-columns: minmax(260px, 1fr) minmax(360px, 1.4fr);
+  gap: 20px;
+}
+
+.panel {
+  background: var(--panel);
+  border: 3px solid var(--panel-edge);
+  border-radius: 0;
+  padding: 20px;
+  box-shadow: 8px 8px 0 var(--panel-shadow);
+}
+
+.panel h2 {
+  margin: 0 0 12px;
+  font-size: 18px;
+}
+
+@media (max-width: 900px) {
+  .layout {
+    grid-template-columns: 1fr;
+  }
+
+  .panel-output {
+    order: 1;
+  }
+
+  .panel-input {
+    order: 2;
+  }
+}
