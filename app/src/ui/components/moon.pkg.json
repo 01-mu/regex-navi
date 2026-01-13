@@ -8,10 +8,6 @@
     {
       "path": "mizchi/js/browser/dom",
       "alias": "js_dom"
-    },
-    {
-      "path": "internal/app/ui/components",
-      "alias": "components"
     }
   ]
 }
