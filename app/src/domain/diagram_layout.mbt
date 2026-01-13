@@ -174,9 +174,13 @@ fn layout_repeat(inner : RegexNode, kind : RepeatKind) -> Diagram {
   }
   // 分岐があると合流線とループが重なりやすいので外側へ逃がす
   let loop_outset = if allow_loop {
-    match inner {
-      Alt(_) => 14
-      _ => 0
+    match kind {
+      Range(_, _) => 14
+      _ =>
+        match inner {
+          Alt(_) => 14
+          _ => 0
+        }
     }
   } else {
     0
