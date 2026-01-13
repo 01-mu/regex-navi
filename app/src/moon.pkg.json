@@ -14,8 +14,8 @@
       "alias": "js_dom"
     },
     {
-      "path": "internal/app/domain",
-      "alias": "domain"
+      "path": "internal/app/core",
+      "alias": "core"
     },
     {
       "path": "internal/app/ui",

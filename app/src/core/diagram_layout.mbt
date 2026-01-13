@@ -71,6 +71,7 @@ fn layout_concat(nodes : Array[RegexNode]) -> Diagram {
   let shapes : Array[Shape] = []
   let mut x = 0
   let mut i = 0
+  // すべての子要素を高さ中央に揃えて連結する
   while i < layouts.length() {
     let child = layouts[i]
     let child_y = center_y - child.entry_y
@@ -121,6 +122,7 @@ fn layout_alt(nodes : Array[RegexNode]) -> Diagram {
   let mut y = 0
   let mut top_branch = 0
   let mut bottom_branch = 0
+  // 各分岐の入口/出口を縦方向に積んでいく
   for i = 0; i < layouts.length(); i = i + 1 {
     let child = layouts[i]
     let child_y = y
