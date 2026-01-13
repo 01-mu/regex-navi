@@ -275,8 +275,21 @@ fn parse_atom(parser : Parser) -> Result[RegexNode, String] {
 fn parse_escape(parser : Parser) -> Result[RegexNode, String] {
   parser.next() |> ignore
   match parser.next() {
-    Some(c) => Ok(Literal("\\" + char_to_string(c)))
+    Some(c) =>
+      // メタ文字をリテラルとして扱う場合はバックスラッシュを省略表示する
+      if is_meta_char(c) {
+        Ok(Literal(char_to_string(c)))
+      } else {
+        Ok(Literal("\\" + char_to_string(c)))
+      }
     None => Err("末尾のエスケープが不完全です")
+  }
+}
+
+fn is_meta_char(c : Char) -> Bool {
+  match c {
+    '.' | '^' | '$' | '|' | '?' | '+' | '*' | '(' | ')' | '[' | ']' | '{' | '}' | '\\' => true
+    _ => false
   }
 }
 
