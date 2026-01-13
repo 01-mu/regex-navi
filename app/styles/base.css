@@ -149,19 +149,22 @@ button.example:hover {
 .svg-wrap {
   width: 100%;
   min-height: 260px;
-  display: grid;
-  place-items: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   border-radius: 0;
   border: 3px dashed #151515;
   background: var(--svg-bg);
   overflow: auto;
   padding: 16px;
   box-shadow: 6px 6px 0 #151515;
+  -webkit-overflow-scrolling: touch;
 }
 
 .svg-wrap svg {
-  max-width: 100%;
+  max-width: none;
   height: auto;
+  flex: 0 0 auto;
 }
 
 .support {
