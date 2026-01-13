@@ -1,5 +1,6 @@
 // SVG 生成
 
+// パターンをレイアウトしてSVG文字列へ変換する
 pub fn build_svg(pattern : String) -> Result[String, String] {
   match parse_regex(pattern) {
     Ok(ast) => Ok(render_svg(layout(ast)))
@@ -7,6 +8,7 @@ pub fn build_svg(pattern : String) -> Result[String, String] {
   }
 }
 
+// Diagram を SVG の文字列に組み立てる
 pub fn render_svg(diagram : Diagram) -> String {
   let pad = 28
   let width = diagram.width + pad * 2
@@ -40,6 +42,7 @@ pub fn render_svg(diagram : Diagram) -> String {
   sb.to_string()
 }
 
+// Shape をSVG要素の文字列へ変換する
 fn shape_to_svg(shape : Shape) -> String {
   match shape {
     Line(x1, y1, x2, y2, class_) => {
@@ -118,6 +121,7 @@ fn shape_to_svg(shape : Shape) -> String {
   }
 }
 
+// SVG用に文字列をエスケープする
 fn escape_xml(input : String) -> String {
   let buf = StringBuilder::new()
   for c in input {
@@ -133,6 +137,7 @@ fn escape_xml(input : String) -> String {
   buf.to_string()
 }
 
+// 右向き矢印のパスを作る
 fn arrow_path(cx : Int, cy : Int, size : Int) -> String {
   let sb = StringBuilder::new()
   sb.write_string("M ")
