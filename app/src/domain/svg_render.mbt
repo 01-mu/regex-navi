@@ -42,29 +42,79 @@ pub fn render_svg(diagram : Diagram) -> String {
 
 fn shape_to_svg(shape : Shape) -> String {
   match shape {
-    Line(x1, y1, x2, y2, class_) =>
-      "<line class=\"" + class_ + "\" x1=\"" + x1.to_string() +
-      "\" y1=\"" + y1.to_string() + "\" x2=\"" + x2.to_string() +
-      "\" y2=\"" + y2.to_string() + "\" />"
-    Rect(x, y, w, h, class_) =>
-      "<rect class=\"" + class_ + "\" x=\"" + x.to_string() +
-      "\" y=\"" + y.to_string() + "\" width=\"" + w.to_string() +
-      "\" height=\"" + h.to_string() + "\" rx=\"8\" ry=\"8\" />"
-    Text(x, y, text, class_) =>
-      "<text class=\"" + class_ + "\" x=\"" + x.to_string() +
-      "\" y=\"" + y.to_string() +
-      "\" text-anchor=\"middle\" dominant-baseline=\"middle\">" +
-      escape_xml(text) + "</text>"
-    Circle(cx, cy, r, class_) =>
-      "<circle class=\"" + class_ + "\" cx=\"" + cx.to_string() +
-      "\" cy=\"" + cy.to_string() + "\" r=\"" + r.to_string() + "\" />"
-    Path(d, class_, dx, dy) =>
+    Line(x1, y1, x2, y2, class_) => {
+      let sb = StringBuilder::new()
+      sb.write_string("<line class=\"")
+      sb.write_string(class_)
+      sb.write_string("\" x1=\"")
+      sb.write_string(x1.to_string())
+      sb.write_string("\" y1=\"")
+      sb.write_string(y1.to_string())
+      sb.write_string("\" x2=\"")
+      sb.write_string(x2.to_string())
+      sb.write_string("\" y2=\"")
+      sb.write_string(y2.to_string())
+      sb.write_string("\" />")
+      sb.to_string()
+    }
+    Rect(x, y, w, h, class_) => {
+      let sb = StringBuilder::new()
+      sb.write_string("<rect class=\"")
+      sb.write_string(class_)
+      sb.write_string("\" x=\"")
+      sb.write_string(x.to_string())
+      sb.write_string("\" y=\"")
+      sb.write_string(y.to_string())
+      sb.write_string("\" width=\"")
+      sb.write_string(w.to_string())
+      sb.write_string("\" height=\"")
+      sb.write_string(h.to_string())
+      sb.write_string("\" rx=\"8\" ry=\"8\" />")
+      sb.to_string()
+    }
+    Text(x, y, text, class_) => {
+      let sb = StringBuilder::new()
+      sb.write_string("<text class=\"")
+      sb.write_string(class_)
+      sb.write_string("\" x=\"")
+      sb.write_string(x.to_string())
+      sb.write_string("\" y=\"")
+      sb.write_string(y.to_string())
+      sb.write_string("\" text-anchor=\"middle\" dominant-baseline=\"middle\">")
+      sb.write_string(escape_xml(text))
+      sb.write_string("</text>")
+      sb.to_string()
+    }
+    Circle(cx, cy, r, class_) => {
+      let sb = StringBuilder::new()
+      sb.write_string("<circle class=\"")
+      sb.write_string(class_)
+      sb.write_string("\" cx=\"")
+      sb.write_string(cx.to_string())
+      sb.write_string("\" cy=\"")
+      sb.write_string(cy.to_string())
+      sb.write_string("\" r=\"")
+      sb.write_string(r.to_string())
+      sb.write_string("\" />")
+      sb.to_string()
+    }
+    Path(d, class_, dx, dy) => {
+      let sb = StringBuilder::new()
+      sb.write_string("<path class=\"")
+      sb.write_string(class_)
+      sb.write_string("\" d=\"")
+      sb.write_string(d)
       if dx == 0 && dy == 0 {
-        "<path class=\"" + class_ + "\" d=\"" + d + "\" />"
+        sb.write_string("\" />")
       } else {
-        "<path class=\"" + class_ + "\" d=\"" + d + "\" transform=\"translate(" +
-        dx.to_string() + " " + dy.to_string() + ")\" />"
+        sb.write_string("\" transform=\"translate(")
+        sb.write_string(dx.to_string())
+        sb.write_string(" ")
+        sb.write_string(dy.to_string())
+        sb.write_string(")\" />")
       }
+      sb.to_string()
+    }
   }
 }
 
