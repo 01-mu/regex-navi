@@ -11,16 +11,16 @@ fn main {
     let trimmed = current.trim().to_string()
     if trimmed.is_empty() {
       error.set("")
-      svg.set(@domain.render_svg(@domain.layout(@domain.empty_node())))
+      svg.set(@diagram.render_svg(@diagram.layout(@regex.empty_node())))
     } else {
-      match @domain.build_svg(current) {
+      match @diagram.build_svg(current) {
         Ok(markup) => {
           error.set("")
           svg.set(markup)
         }
         Err(msg) => {
           error.set(msg)
-          svg.set(@domain.render_svg(@domain.layout(@domain.empty_node())))
+          svg.set(@diagram.render_svg(@diagram.layout(@regex.empty_node())))
         }
       }
     }
@@ -36,7 +36,7 @@ fn main {
   let doc = @js_dom.document()
   match doc.getElementById("app") {
     Some(el) => {
-      let app = @ui.build_root(pattern, error, svg_ref)
+      let app = @ui.build_app(pattern, error, svg_ref)
       @dom.render(el |> @dom.DomElement::from_jsdom, app)
     }
     None => ()

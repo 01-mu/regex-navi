@@ -20,3 +20,20 @@ Codexセッションの文脈を引き継ぐ目的で継続的に追記します
 - SVGの線幅/影/マーカーサイズの微調整
 - 例パターンの追加や文言整理
 - Cloudflare Pages の Secrets 設定（`CLOUDFLARE_API_TOKEN` / `CLOUDFLARE_ACCOUNT_ID`）
+
+## 2026-01-13
+- MoonBit の CLI インストール手順を最新URLへ更新し、CIで `moon update` を実行するよう調整
+- Cloudflare Pages の Actions で `deployments: write` を付与
+- main へのPRは dev からのみ許可するチェックを追加（`Require dev into main`）
+- `dev` 運用を明文化し、Jujutsu のブックマーク運用ルールを `AGENTS.md` に追記
+- モバイルでは「出力」→「入力」の順に並ぶようレイアウト変更（見出しも「出力」に）
+- 連続リテラルを1ボックスに統合（`http` など）
+- `^`/`$` の表記を「開始/終了」に変更し、アンカーはボックス結合しない
+- 繰り返し記号の補足ラベルを追加・位置/デザインを調整（`+` は丸み強化）
+- `{m,n}` 表記を `m回` / `m〜n回` / `m回以上` に変更
+- 例パターンを複数追加（`a+b+c+` / `file\\.(png|jpg)` など）
+- `dev` → `main` のPRを作成してマージ済み
+- GitHub branch protection の required check 名を実際の `enforce-dev-source` に合わせて修正（Terraform適用）
+
+未完了:
+- SVGの線幅/影/マーカーサイズの微調整（必要なら）

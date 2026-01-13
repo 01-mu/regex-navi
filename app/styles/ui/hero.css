@@ -1,0 +1,21 @@
+.hero {
+  display: grid;
+  gap: 10px;
+  margin-bottom: 28px;
+  padding: 18px 20px;
+  border: 3px solid var(--ink-1);
+  background: var(--hero-bg);
+  box-shadow: 6px 6px 0 var(--panel-shadow);
+}
+
+.hero h1 {
+  font-size: 34px;
+  margin: 0;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.hero p {
+  margin: 0;
+  color: var(--ink-2);
+}

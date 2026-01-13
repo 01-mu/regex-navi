@@ -17,14 +17,14 @@ pub struct Diagram {
   shapes : Array[Shape]
 }
 
-pub fn layout(node : RegexNode) -> Diagram {
+pub fn layout(node : @regex.RegexNode) -> Diagram {
   match node {
-    Empty => layout_skip(40)
-    Literal(text) => layout_box(text)
-    CharClass(text) => layout_box(text)
-    Concat(nodes) => layout_concat(nodes)
-    Alt(nodes) => layout_alt(nodes)
-    Repeat(inner, kind) => layout_repeat(inner, kind)
+    @regex.Empty => layout_skip(40)
+    @regex.Literal(text) => layout_box(text)
+    @regex.CharClass(text) => layout_box(text)
+    @regex.Concat(nodes) => layout_concat(nodes)
+    @regex.Alt(nodes) => layout_alt(nodes)
+    @regex.Repeat(inner, kind) => layout_repeat(inner, kind)
   }
 }
 
@@ -49,7 +49,7 @@ fn layout_skip(width : Int) -> Diagram {
   { width, height, entry_y: y, exit_y: y, shapes }
 }
 
-fn layout_concat(nodes : Array[RegexNode]) -> Diagram {
+fn layout_concat(nodes : Array[@regex.RegexNode]) -> Diagram {
   if nodes.is_empty() {
     return layout_skip(40)
   }
@@ -71,6 +71,7 @@ fn layout_concat(nodes : Array[RegexNode]) -> Diagram {
   let shapes : Array[Shape] = []
   let mut x = 0
   let mut i = 0
+  // すべての子要素を高さ中央に揃えて連結する
   while i < layouts.length() {
     let child = layouts[i]
     let child_y = center_y - child.entry_y
@@ -90,7 +91,7 @@ fn layout_concat(nodes : Array[RegexNode]) -> Diagram {
   { width, height, entry_y: center_y, exit_y: center_y, shapes }
 }
 
-fn layout_alt(nodes : Array[RegexNode]) -> Diagram {
+fn layout_alt(nodes : Array[@regex.RegexNode]) -> Diagram {
   if nodes.length() == 1 {
     return layout(nodes[0])
   }
@@ -121,6 +122,7 @@ fn layout_alt(nodes : Array[RegexNode]) -> Diagram {
   let mut y = 0
   let mut top_branch = 0
   let mut bottom_branch = 0
+  // 各分岐の入口/出口を縦方向に積んでいく
   for i = 0; i < layouts.length(); i = i + 1 {
     let child = layouts[i]
     let child_y = y
@@ -144,39 +146,26 @@ fn layout_alt(nodes : Array[RegexNode]) -> Diagram {
   { width: right_x, height: total_height, entry_y, exit_y: entry_y, shapes }
 }
 
-fn layout_repeat(inner : RegexNode, kind : RepeatKind) -> Diagram {
+fn layout_repeat(inner : @regex.RegexNode, kind : @regex.RepeatKind) -> Diagram {
   let child = layout(inner)
   let pad = 20
   let edge_gap = 3
   let loop_gap = match kind {
-    OneOrMore => 32
-    ZeroOrMore => 32
-    Range(_, _) => 26
+    @regex.OneOrMore => 32
+    @regex.ZeroOrMore => 32
+    @regex.Range(_, _) => 26
     _ => 18
   }
-  let width = child.width + pad * 2
-  let height = child.height + loop_gap * 2
-  let entry_y = loop_gap + child.entry_y
-  let shapes : Array[Shape] = []
-  append_shapes(shapes, offset_shapes(child.shapes, pad, loop_gap))
-  shapes.push(Line(0, entry_y, pad - edge_gap, entry_y, "rr-line"))
-  shapes.push(Line(pad + child.width + edge_gap, entry_y, width, entry_y, "rr-line"))
-  let bypass_y = loop_gap / 2
-  let loop_y = height - loop_gap / 2
   let allow_bypass = match kind {
-    Optional => true
-    ZeroOrMore => true
-    Range(min, _) => min == 0
+    @regex.Optional => true
+    @regex.ZeroOrMore => true
+    @regex.Range(min, _) => min == 0
     _ => false
   }
-  if allow_bypass {
-    // Optional/ZeroOrMore のバイパスを丸角にする
-    shapes.push(Path(bypass_path(width, entry_y, bypass_y), "rr-line", 0, 0))
-  }
   let allow_loop = match kind {
-    OneOrMore => true
-    ZeroOrMore => true
-    Range(min, max) => {
+    @regex.OneOrMore => true
+    @regex.ZeroOrMore => true
+    @regex.Range(min, max) => {
       let upper = match max {
         Some(value) => value
         None => min + 1
@@ -185,20 +174,59 @@ fn layout_repeat(inner : RegexNode, kind : RepeatKind) -> Diagram {
     }
     _ => false
   }
+  // 分岐があると合流線とループが重なりやすいので外側へ逃がす
+  let loop_outset = if allow_loop {
+    match kind {
+      @regex.Range(_, _) => 14
+      _ =>
+        match inner {
+          @regex.Alt(_) => 14
+          _ => 0
+        }
+    }
+  } else {
+    0
+  }
+  let left_outset = loop_outset
+  let right_outset = loop_outset
+  let width = child.width + pad * 2 + left_outset + right_outset
+  let height = child.height + loop_gap * 2
+  let entry_y = loop_gap + child.entry_y
+  let shapes : Array[Shape] = []
+  let child_x = pad + left_outset
+  append_shapes(shapes, offset_shapes(child.shapes, child_x, loop_gap))
+  shapes.push(Line(0, entry_y, child_x - edge_gap, entry_y, "rr-line"))
+  shapes.push(Line(child_x + child.width + edge_gap, entry_y, width, entry_y, "rr-line"))
+  let bypass_y = loop_gap / 2
+  let loop_y = height - loop_gap / 2
+  if allow_bypass {
+    // Optional/ZeroOrMore のバイパスを丸角にする
+    shapes.push(Path(bypass_path(width, entry_y, bypass_y), "rr-line", 0, 0))
+  }
   if allow_loop {
     // 繰り返しループを丸角で描画
-    let loop_radius = match kind {
-      OneOrMore => 14
+    let loop_radius = (match kind {
+      @regex.OneOrMore => 14
       _ => 8
-    }
+    }) + (if loop_outset > 0 { 4 } else { 0 })
+    // 補足ラベルが付くループだけ波線にする
     let loop_class = match kind {
-      OneOrMore => "rr-loop-soft"
+      @regex.OneOrMore => "rr-repeat-soft"
+      @regex.ZeroOrMore => "rr-repeat-soft"
+      @regex.Range(_, _) => "rr-repeat-line"
       _ => "rr-line"
     }
-    shapes.push(Path(loop_path(pad, pad + child.width, entry_y, loop_y, loop_radius), loop_class, 0, 0))
+    let loop_left = child_x
+    let loop_right = child_x + child.width
+    let loop_path_d = if loop_outset > 0 {
+      loop_path_outset_lr(loop_left, loop_right, entry_y, loop_y, loop_radius, left_outset, right_outset)
+    } else {
+      loop_path(loop_left, loop_right, entry_y, loop_y, loop_radius)
+    }
+    shapes.push(Path(loop_path_d, loop_class, 0, 0))
   }
   match kind {
-    Range(min, max) => {
+    @regex.Range(min, max) => {
       // 回数指定のラベルを追加
       let label = range_label(min, max)
       if min == 0 {
@@ -207,14 +235,14 @@ fn layout_repeat(inner : RegexNode, kind : RepeatKind) -> Diagram {
         add_label(shapes, width / 2, label_bottom_y(loop_y, height), label)
       }
     }
-    Optional => {
+    @regex.Optional => {
       ()
     }
-    OneOrMore => {
+    @regex.OneOrMore => {
       // ループ側に寄せて意味を補足
       add_label(shapes, width / 2, label_bottom_y(loop_y, height), "1回以上")
     }
-    ZeroOrMore => {
+    @regex.ZeroOrMore => {
       add_label(shapes, width / 2, label_bottom_y(loop_y, height), "0回以上")
     }
     _ => ()
@@ -306,6 +334,62 @@ fn loop_path(
   sb.write_string(left_x.to_string())
   sb.write_string(" ")
   sb.write_string((loop_y - radius).to_string())
+  sb.write_string(" L ")
+  sb.write_string(left_x.to_string())
+  sb.write_string(" ")
+  sb.write_string(entry_y.to_string())
+  sb.to_string()
+}
+
+fn loop_path_outset_lr(
+  left_x : Int,
+  right_x : Int,
+  entry_y : Int,
+  loop_y : Int,
+  radius_hint : Int,
+  left_outset : Int,
+  right_outset : Int,
+) -> String {
+  let radius = clamp_radius(radius_hint, right_x - left_x + left_outset + right_outset, loop_y - entry_y)
+  let sx = right_x + right_outset
+  let lx = left_x - left_outset
+  let sb = StringBuilder::new()
+  sb.write_string("M ")
+  sb.write_string(right_x.to_string())
+  sb.write_string(" ")
+  sb.write_string(entry_y.to_string())
+  sb.write_string(" L ")
+  sb.write_string(sx.to_string())
+  sb.write_string(" ")
+  sb.write_string(entry_y.to_string())
+  sb.write_string(" L ")
+  sb.write_string(sx.to_string())
+  sb.write_string(" ")
+  sb.write_string((loop_y - radius).to_string())
+  sb.write_string(" Q ")
+  sb.write_string(sx.to_string())
+  sb.write_string(" ")
+  sb.write_string(loop_y.to_string())
+  sb.write_string(" ")
+  sb.write_string((sx - radius).to_string())
+  sb.write_string(" ")
+  sb.write_string(loop_y.to_string())
+  sb.write_string(" L ")
+  sb.write_string((lx + radius).to_string())
+  sb.write_string(" ")
+  sb.write_string(loop_y.to_string())
+  sb.write_string(" Q ")
+  sb.write_string(lx.to_string())
+  sb.write_string(" ")
+  sb.write_string(loop_y.to_string())
+  sb.write_string(" ")
+  sb.write_string(lx.to_string())
+  sb.write_string(" ")
+  sb.write_string((loop_y - radius).to_string())
+  sb.write_string(" L ")
+  sb.write_string(lx.to_string())
+  sb.write_string(" ")
+  sb.write_string(entry_y.to_string())
   sb.write_string(" L ")
   sb.write_string(left_x.to_string())
   sb.write_string(" ")

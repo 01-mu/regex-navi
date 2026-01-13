@@ -14,8 +14,12 @@
       "alias": "js_dom"
     },
     {
-      "path": "internal/app/domain",
-      "alias": "domain"
+      "path": "internal/app/core/diagram",
+      "alias": "diagram"
+    },
+    {
+      "path": "internal/app/core/regex",
+      "alias": "regex"
     },
     {
       "path": "internal/app/ui",

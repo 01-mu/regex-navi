@@ -16,18 +16,17 @@
 .rr-text {
   fill: var(--rail-text);
   font-family: "IBM Plex Mono", "Menlo", "SFMono-Regular", monospace;
-  font-size: 13px;
+  font-size: 15px;
   font-weight: 700;
 }
 
 .rr-label {
   fill: var(--accent-4);
-  font-family: "Zen Kurenaido", "Hiragino Kaku Gothic ProN", sans-serif;
-  font-size: 13px;
-  font-weight: 700;
+  font-size: 15px;
+  font-weight: 600;
   stroke: #fff8e6;
-  stroke-width: 4;
-  letter-spacing: 0.02em;
+  stroke-width: 3;
+  letter-spacing: 0.04em;
   paint-order: stroke fill;
 }
 
@@ -37,6 +36,24 @@
   fill: none;
   stroke-linecap: round;
   stroke-linejoin: round;
+}
+
+.rr-repeat-line {
+  stroke: var(--rail-line);
+  stroke-width: 3;
+  fill: none;
+  stroke-linecap: square;
+  stroke-linejoin: miter;
+  stroke-dasharray: 8 6;
+}
+
+.rr-repeat-soft {
+  stroke: var(--rail-line);
+  stroke-width: 3;
+  fill: none;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-dasharray: 8 6;
 }
 
 .rr-marker {

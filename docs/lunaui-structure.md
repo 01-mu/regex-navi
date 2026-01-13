@@ -5,7 +5,9 @@ app/src/
   main.mbt
   ui/
     root.mbt
-  domain/
+  core/
+    diagram/
+    regex/
     regex_parser.mbt
     diagram_layout.mbt
     svg_render.mbt
@@ -14,7 +16,9 @@ app/src/
 ## Rationale
 - `main.mbt`: Wires signals, effects, and mounts the UI; keep it small.
 - `ui/`: Rendering-only code. Receives state and references, does not own logic.
-- `domain/`: UI-independent logic (parsing, layout rules, SVG generation).
+- `core/`: UI-independent logic.
+- `core/regex/`: 正規表現のパースとAST生成。
+- `core/diagram/`: レール図のレイアウトとSVG生成。
 
 ## Naming & Split Rules
 - File names: `snake_case`. Types: `CamelCase`.
