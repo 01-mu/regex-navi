@@ -11,16 +11,16 @@ fn main {
     let trimmed = current.trim().to_string()
     if trimmed.is_empty() {
       error.set("")
-      svg.set(@domain.render_svg(@domain.layout(@domain.empty_node())))
+      svg.set(@core.render_svg(@core.layout(@core.empty_node())))
     } else {
-      match @domain.build_svg(current) {
+      match @core.build_svg(current) {
         Ok(markup) => {
           error.set("")
           svg.set(markup)
         }
         Err(msg) => {
           error.set(msg)
-          svg.set(@domain.render_svg(@domain.layout(@domain.empty_node())))
+          svg.set(@core.render_svg(@core.layout(@core.empty_node())))
         }
       }
     }

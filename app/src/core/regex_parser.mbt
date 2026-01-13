@@ -108,6 +108,7 @@ fn parse_alt(parser : Parser) -> Result[RegexNode, String] {
     Ok(node) => nodes.push(node)
     Err(msg) => return Err(msg)
   }
+  // 左結合で OR を束ねる
   while parser.consume('|') {
     match parse_concat(parser) {
       Ok(node) => nodes.push(node)
@@ -123,6 +124,7 @@ fn parse_alt(parser : Parser) -> Result[RegexNode, String] {
 
 fn parse_concat(parser : Parser) -> Result[RegexNode, String] {
   let nodes : Array[RegexNode] = []
+  // ')' や '|' までを連結として読む
   while true {
     match parser.peek() {
       None => break
@@ -211,6 +213,7 @@ fn parse_range(parser : Parser, node : RegexNode) -> Result[RegexNode, String] {
     Ok(value) => value
     Err(msg) => return Err(msg)
   }
+  // {m,} 形式は max を None として扱う
   let mut max : Int? = None
   if parser.consume(',') {
     match parser.peek() {
