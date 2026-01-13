@@ -12,6 +12,10 @@
     {
       "path": "internal/app/ui/components",
       "alias": "components"
+    },
+    {
+      "path": "internal/app/ui/data",
+      "alias": "data"
     }
   ]
 }
