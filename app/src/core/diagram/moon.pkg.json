@@ -1,0 +1,8 @@
+{
+  "import": [
+    {
+      "path": "internal/app/core/regex",
+      "alias": "regex"
+    }
+  ]
+}

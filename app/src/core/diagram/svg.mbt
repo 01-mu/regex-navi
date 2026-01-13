@@ -2,7 +2,7 @@
 
 // パターンをレイアウトしてSVG文字列へ変換する
 pub fn build_svg(pattern : String) -> Result[String, String] {
-  match parse_regex(pattern) {
+  match @regex.parse_regex(pattern) {
     Ok(ast) => Ok(render_svg(layout(ast)))
     Err(msg) => Err(msg)
   }
