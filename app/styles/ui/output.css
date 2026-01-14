@@ -4,7 +4,7 @@
   display: flex;
   justify-content: flex-start;
   align-items: center;
-  border-radius: 0;
+  border-radius: var(--radius-md);
   border: 3px dashed #151515;
   background: var(--svg-bg);
   overflow: auto;

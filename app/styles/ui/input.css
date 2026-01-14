@@ -6,7 +6,7 @@
 input.regex-input {
   width: 100%;
   padding: 14px 16px;
-  border-radius: 0;
+  border-radius: var(--radius-md);
   border: 3px solid var(--panel-edge);
   font-family: "IBM Plex Mono", "Menlo", "SFMono-Regular", monospace;
   font-size: 16px;
@@ -35,7 +35,7 @@ input.regex-input:focus {
 button.example {
   border: 3px solid var(--panel-edge);
   background: #ffd39a;
-  border-radius: 0;
+  border-radius: var(--radius-sm);
   padding: 6px 12px;
   font-size: 12px;
   cursor: pointer;
@@ -52,7 +52,7 @@ button.example:hover {
 .error {
   margin-top: 8px;
   padding: 12px 14px;
-  border-radius: 0;
+  border-radius: var(--radius-md);
   background: var(--error-bg);
   border: 3px solid #151515;
   color: #151515;

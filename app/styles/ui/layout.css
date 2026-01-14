@@ -13,7 +13,7 @@
 .panel {
   background: var(--panel);
   border: 3px solid var(--panel-edge);
-  border-radius: 0;
+  border-radius: var(--radius-md);
   padding: 20px;
   box-shadow: 8px 8px 0 var(--panel-shadow);
   min-width: 0;

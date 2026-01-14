@@ -72,7 +72,7 @@ fn shape_to_svg(shape : Shape) -> String {
       sb.write_string(w.to_string())
       sb.write_string("\" height=\"")
       sb.write_string(h.to_string())
-      sb.write_string("\" rx=\"8\" ry=\"8\" />")
+      sb.write_string("\" rx=\"4\" ry=\"4\" />")
       sb.to_string()
     }
     Text(x, y, text, class_) => {
