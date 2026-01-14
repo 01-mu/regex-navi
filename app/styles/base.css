@@ -40,3 +40,13 @@ body {
   background: linear-gradient(135deg, var(--bg-1) 0%, var(--bg-2) 100%);
   min-height: 100vh;
 }
+
+.soft-wrap {
+  line-break: strict;
+  word-break: keep-all;
+}
+
+.soft-chunk {
+  display: inline;
+  white-space: nowrap;
+}

@@ -2,7 +2,7 @@
 
 ## Project Structure & Module Organization
 - `app/` is the working directory for the MoonBit + Vite app.
-- `app/src/` holds MoonBit source (`lib.mbt`) and compiled output is handled by the MoonBit/Vite plugin.
+- `app/src/` holds MoonBit source (`lib.mbt`), and compiled output is handled by the MoonBit/Vite plugin.
 - `app/main.ts` is the Vite entry that loads the MoonBit module and styles.
 - `app/index.html` and `app/style.css` define the UI shell and styling.
 - `docs/` stores documentation; start at `docs/README.md` and keep `AGENTS.md` as the primary contributor guide.
@@ -31,9 +31,13 @@ Run commands from `app/`.
 - History shows short, imperative subjects, sometimes Conventional Commits (e.g., `fix:`). Follow that style.
 - PRs should include: summary, manual test steps, and UI screenshots/gifs for visual changes.
 - Link related issues when available.
-- Jujutsu の change は必ず description を付ける（作業開始時に `jj describe` で更新）。
-- ブランチ運用: dev で作業し、指示があれば作業ブックマークを切って dev に統合する。dev -> main は GitHub の PR のみ許可する。
-- Jujutsu のチェンジ/コミットには適切なメッセージを付与する。
+- Always add a description to Jujutsu changes (update via `jj describe` at the start of work).
+- Branching: work on `dev`; if instructed, create a work bookmark and merge it into `dev`. Only allow `dev -> main` via GitHub PRs.
+- Use appropriate messages for Jujutsu changes/commits.
+- Merging into `main` triggers a release; always ask the user for explicit confirmation in Japanese before merging.
+- To reduce release cost, batch changes: split work into multiple branches, merge them into `dev` in order, then merge `dev` into `main` once.
+- Split Jujutsu changes into small units, deciding boundaries with the final commit timing in mind.
+- Never skip `jj describe`; keep each change description accurate and up to date.
 
 ## Security & Configuration Tips
 - Do not commit secrets. Prefer `.env.example` with placeholders if config is needed.
