@@ -11,14 +11,13 @@ pub fn build_app(
     @components.build_hero(),
     @components.build_layout(pattern, error, svg_ref, examples),
     @components.build_support(guide_items),
-    @dom.footer(class="credit", [
+    @dom.div(class="credit", [
       @dom.p([
         @dom.text("Developed by 01-mu. "),
         @dom.a(
           class="credit-link",
           href="https://github.com/01-mu/regex-navi",
           target="_blank",
-          rel="noopener",
           [@dom.text("GitHub repository")],
         ),
       ]),
