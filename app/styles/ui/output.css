@@ -2,7 +2,7 @@
   width: 100%;
   min-height: 260px;
   display: flex;
-  justify-content: center;
+  justify-content: flex-start;
   align-items: center;
   border-radius: 0;
   border: 3px dashed #151515;
@@ -13,8 +13,19 @@
   -webkit-overflow-scrolling: touch;
 }
 
+.svg-stage {
+  width: max-content;
+  min-width: 100%;
+  min-height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex: 0 0 auto;
+}
+
 .svg-wrap svg {
   max-width: none;
+  display: block;
   height: auto;
   flex: 0 0 auto;
 }
