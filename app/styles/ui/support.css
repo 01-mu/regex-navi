@@ -2,6 +2,7 @@
   margin-top: 28px;
   padding: 20px;
   border: 3px solid var(--panel-edge);
+  border-radius: var(--radius-md);
   background: #fef4d6;
   box-shadow: 8px 8px 0 var(--panel-shadow);
 }
@@ -19,6 +20,7 @@
 
 .support-card {
   border: 3px solid var(--panel-edge);
+  border-radius: var(--radius-md);
   background: #fffdf4;
   padding: 12px;
   box-shadow: 4px 4px 0 var(--panel-shadow);
@@ -57,6 +59,7 @@
   gap: 6px;
   padding: 4px 8px;
   border: 2px solid var(--panel-edge);
+  border-radius: var(--radius-sm);
   color: var(--ink-1);
   font-weight: 700;
   text-decoration: none;

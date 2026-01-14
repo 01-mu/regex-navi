@@ -25,6 +25,8 @@
   --rail-line: #1f2937;
   --rail-box: #ffe36e;
   --rail-text: #111827;
+  --radius-sm: 3px;
+  --radius-md: 4px;
 }
 
 *,
