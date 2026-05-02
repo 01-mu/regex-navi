@@ -10,8 +10,13 @@ export const OutputPanel = ({ svg }: OutputPanelProps) => {
 
   useEffect(() => {
     const svgElement = svgRef.current;
+    const wrap = wrapRef.current;
     if (svgElement) {
       svgElement.innerHTML = svg;
+    }
+    if (wrap) {
+      const maxScroll = wrap.scrollWidth - wrap.clientWidth;
+      wrap.scrollLeft = maxScroll > 0 ? Math.floor(maxScroll / 2) : 0;
     }
   }, [svg]);
 
@@ -29,7 +34,7 @@ export const OutputPanel = ({ svg }: OutputPanelProps) => {
     center();
     window.addEventListener("resize", center);
     return () => window.removeEventListener("resize", center);
-  }, [svg]);
+  }, []);
 
   return (
     <div className="panel max-[900px]:order-1">
