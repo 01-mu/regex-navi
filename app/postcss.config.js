@@ -1,5 +1,7 @@
 export default {
   plugins: {
-    tailwindcss: {},
+    tailwindcss: {
+      config: "./app/tailwind.config.ts",
+    },
   },
 };
