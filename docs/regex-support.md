@@ -14,14 +14,14 @@
 ## Display Semantics
 
 - Consecutive literals are merged into one diagram box.
-- `.` is displayed as `任意`.
-- `^` is displayed as `開始`.
-- `$` is displayed as `終了`.
+- `.` is displayed with the Japanese label `任意` ("any").
+- `^` is displayed with the Japanese label `開始` ("start").
+- `$` is displayed with the Japanese label `終了` ("end").
 - `?` and `{0,n}` draw a bypass route.
 - `+`, `*`, and repeated ranges draw a loop route when useful.
-- `{m}` displays `m回`.
-- `{m,n}` displays `m〜n回`.
-- `{m,}` displays `m回以上`.
+- `{m}` displays the Japanese label `m回` ("m times").
+- `{m,n}` displays the Japanese label `m〜n回` ("m to n times").
+- `{m,}` displays the Japanese label `m回以上` ("at least m times").
 
 ## Out of Scope / Not Yet
 

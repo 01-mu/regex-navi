@@ -1,14 +1,14 @@
 # regex-navi
 
-正規表現の構造をレール図（SVG）として可視化する、軽量な Web アプリです。日本語での理解を助けることを目的としています。
+A lightweight web app that visualizes regular expression structure as railroad diagrams (SVG). The app is designed to help Japanese readers understand regex patterns visually.
 
 ## Features
 
-- 入力した正規表現を即時にレール図へ変換
-- React + Vite + TypeScript によるシンプルな実装
-- Tailwind CSS ベースのネオブルータリズム UI
-- Vitest によるパーサーと SVG 生成のテスト
-- Nix flakes + direnv + Bun を前提にした開発環境
+- Converts typed regular expressions into railroad diagrams immediately.
+- Uses a small React + Vite + TypeScript implementation.
+- Provides a Tailwind CSS-based neo-brutalist UI.
+- Tests parser behavior and SVG generation with Vitest.
+- Assumes a development environment based on Nix flakes, direnv, and Bun.
 
 ## Setup
 
@@ -17,7 +17,7 @@ direnv allow
 bun install
 ```
 
-direnv を使わない場合:
+Without direnv:
 
 ```bash
 nix develop -c bun install
@@ -29,13 +29,13 @@ nix develop -c bun install
 bun run dev
 ```
 
-direnv を使わない場合:
+Without direnv:
 
 ```bash
 nix develop -c bun run dev
 ```
 
-開発サーバーは `http://127.0.0.1:5173/` で起動します。
+The development server starts at `http://127.0.0.1:5173/`.
 
 ## Test
 
@@ -51,25 +51,25 @@ bun run build
 
 ## Supported Regex Syntax
 
-- 連結: `ab`
-- 選択: `a|b`
-- グループ: `(ab)`
-- 量指定: `?`, `+`, `*`, `{m,n}`, `{m}`, `{m,}`
-- ワイルドカード: `.`
-- アンカー: `^`, `$`
-- 文字クラス: `[a-z0-9_]`
-- エスケープ: `\` でメタ文字をリテラル化
+- Concatenation: `ab`
+- Alternation: `a|b`
+- Grouping: `(ab)`
+- Quantifiers: `?`, `+`, `*`, `{m,n}`, `{m}`, `{m,}`
+- Wildcard: `.`
+- Anchors: `^`, `$`
+- Character classes: `[a-z0-9_]`
+- Escapes: `\` makes meta characters literal
 
-詳細は [docs/regex-support.md](docs/regex-support.md) を参照してください。
+See [docs/regex-support.md](docs/regex-support.md) for details.
 
 ## Project Structure
 
-- `src/ui/`: React UI と表示用データ
-- `src/regex/`: 正規表現パーサーと AST
-- `src/diagram/`: レール図レイアウトと SVG 生成
-- `src/styles.css`: Tailwind エントリと SVG 用スタイル
-- `docs/`: 仕様や設計メモ
+- `src/ui/`: React UI and display data
+- `src/regex/`: regex parser and AST
+- `src/diagram/`: railroad diagram layout and SVG rendering
+- `src/styles.css`: Tailwind entry point and SVG styles
+- `docs/`: specifications and design notes
 
 ## Documentation
 
-ドキュメント一覧は [docs/README.md](docs/README.md) から参照できます。
+The documentation index is available at [docs/README.md](docs/README.md).
