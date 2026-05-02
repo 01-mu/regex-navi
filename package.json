@@ -4,9 +4,9 @@
   "version": "0.1.0",
   "type": "module",
   "scripts": {
-    "dev": "vite --host 127.0.0.1",
-    "build": "vite build",
-    "test": "vitest run",
+    "dev": "vite --config app/vite.config.ts --host 127.0.0.1",
+    "build": "vite build --config app/vite.config.ts",
+    "test": "vitest run --config app/vite.config.ts",
     "check": "biome check .",
     "format": "biome check --write ."
   },

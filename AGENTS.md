@@ -2,11 +2,11 @@
 
 ## Project Structure & Module Organization
 
-- `src/ui/` contains React components and display data.
-- `src/regex/` contains the regex parser and AST types.
-- `src/diagram/` contains railroad-diagram layout and SVG rendering.
-- `src/test/` contains shared Vitest setup.
-- `public/` stores static assets such as the favicon.
+- `app/src/ui/` contains React components and display data.
+- `app/src/regex/` contains the regex parser and AST types.
+- `app/src/diagram/` contains railroad-diagram layout and SVG rendering.
+- `app/src/test/` contains shared Vitest setup.
+- `app/public/` stores static assets such as the favicon.
 - `docs/` stores product, architecture, and contributor documentation.
 
 ## Build, Test, and Development Commands
@@ -26,8 +26,8 @@ Without direnv, prefix commands with `nix develop -c`, for example `nix develop 
 
 - Indentation: 2 spaces in TS/TSX/CSS/JSON/Markdown.
 - TypeScript: prefer `const`, precise types at module boundaries, and pure helpers for parser/layout logic.
-- React: keep UI state in components and core regex/diagram logic in `src/regex/` and `src/diagram/`.
-- CSS: prefer Tailwind utilities for layout and component styling; use `src/styles.css` for global styles and SVG classes.
+- React: keep UI state in components and core regex/diagram logic in `app/src/regex/` and `app/src/diagram/`.
+- CSS: prefer Tailwind utilities for layout and component styling; use `app/src/styles.css` for global styles and SVG classes.
 - UI copy and user-facing strings should be Japanese unless there is a clear reason not to.
 - Add concise Japanese comments only where they explain non-obvious behavior.
 

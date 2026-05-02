@@ -13,13 +13,13 @@
 
 ## Module Responsibilities
 
-- `src/main.tsx`: mounts React into `#root` and imports global styles.
-- `src/ui/App.tsx`: owns input state, renders panels, examples, guide, and SVG output.
-- `src/ui/data.ts`: example regex patterns and guide content.
-- `src/regex/parser.ts`: converts supported regex syntax into an AST.
-- `src/diagram/layout.ts`: converts the AST into diagram dimensions and shapes.
-- `src/diagram/svg.ts`: converts diagram shapes into escaped SVG markup.
-- `src/styles.css`: Tailwind entry, global base styles, and SVG class styles.
+- `app/src/main.tsx`: mounts React into `#root` and imports global styles.
+- `app/src/ui/App.tsx`: owns input state, renders panels, examples, guide, and SVG output.
+- `app/src/ui/data.ts`: example regex patterns and guide content.
+- `app/src/regex/parser.ts`: converts supported regex syntax into an AST.
+- `app/src/diagram/layout.ts`: converts the AST into diagram dimensions and shapes.
+- `app/src/diagram/svg.ts`: converts diagram shapes into escaped SVG markup.
+- `app/src/styles.css`: Tailwind entry, global base styles, and SVG class styles.
 
 ## Data Flow
 
@@ -37,7 +37,7 @@
 - Escape all text inserted into SVG.
 - Keep UI copy in Japanese.
 - Add tests near the module being changed when behavior changes.
-- Keep Tailwind utilities in components; reserve `src/styles.css` for global and SVG-specific CSS.
+- Keep Tailwind utilities in components; reserve `app/src/styles.css` for global and SVG-specific CSS.
 
 ## Build Flow
 

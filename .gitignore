@@ -4,3 +4,26 @@ dist
 .vite
 coverage
 *.log
+
+# Terraform
+.terraform/
+*.tfstate
+*.tfstate.*
+tfplan
+*.tfplan
+crash.log
+crash.*.log
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json
+
+# Local secrets
+.env
+.env.*
+*.tfvars
+*.tfvars.json
+
+# Infisical local cache / generated files if any
+.infisical/secrets.json
+.infisical.json
