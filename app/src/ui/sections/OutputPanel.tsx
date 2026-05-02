@@ -6,6 +6,14 @@ type OutputPanelProps = {
 
 export const OutputPanel = ({ svg }: OutputPanelProps) => {
   const wrapRef = useRef<HTMLDivElement>(null);
+  const svgRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const svgElement = svgRef.current;
+    if (svgElement) {
+      svgElement.innerHTML = svg;
+    }
+  }, [svg]);
 
   useEffect(() => {
     const wrap = wrapRef.current;
@@ -21,7 +29,7 @@ export const OutputPanel = ({ svg }: OutputPanelProps) => {
     center();
     window.addEventListener("resize", center);
     return () => window.removeEventListener("resize", center);
-  });
+  }, [svg]);
 
   return (
     <div className="panel max-[900px]:order-1">
@@ -30,10 +38,9 @@ export const OutputPanel = ({ svg }: OutputPanelProps) => {
         className="flex min-h-[260px] w-full items-center justify-start overflow-auto rounded border-[3px] border-dashed border-ink bg-[#f1f6ff] p-4 shadow-brutal-md"
         ref={wrapRef}
       >
-        {/* biome-ignore lint/security/noDangerouslySetInnerHtml: SVG markup is generated internally and text is XML-escaped. */}
         <div
           className="flex min-h-full min-w-full flex-[0_0_auto] items-center justify-center"
-          dangerouslySetInnerHTML={{ __html: svg }}
+          ref={svgRef}
         />
       </div>
     </div>
