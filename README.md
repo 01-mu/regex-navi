@@ -64,10 +64,10 @@ See [docs/regex-support.md](docs/regex-support.md) for details.
 
 ## Project Structure
 
-- `src/ui/`: React UI and display data
-- `src/regex/`: regex parser and AST
-- `src/diagram/`: railroad diagram layout and SVG rendering
-- `src/styles.css`: Tailwind entry point and SVG styles
+- `app/src/ui/`: React UI and display data
+- `app/src/regex/`: regex parser and AST
+- `app/src/diagram/`: railroad diagram layout and SVG rendering
+- `app/src/styles.css`: Tailwind entry point and SVG styles
 - `docs/`: specifications and design notes
 
 ## Documentation
