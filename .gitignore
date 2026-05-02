@@ -9,6 +9,7 @@ coverage
 .terraform/
 *.tfstate
 *.tfstate.*
+tfplan
 *.tfplan
 crash.log
 crash.*.log
@@ -25,3 +26,4 @@ override.tf.json
 
 # Infisical local cache / generated files if any
 .infisical/secrets.json
+.infisical.json
