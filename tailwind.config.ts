@@ -19,7 +19,12 @@ export default {
         rail: "#1f2937",
       },
       fontFamily: {
-        body: ["Kosugi Maru", "Hiragino Kaku Gothic ProN", "Noto Sans JP", "sans-serif"],
+        body: [
+          "Kosugi Maru",
+          "Hiragino Kaku Gothic ProN",
+          "Noto Sans JP",
+          "sans-serif",
+        ],
         mono: ["IBM Plex Mono", "Menlo", "SFMono-Regular", "monospace"],
       },
     },

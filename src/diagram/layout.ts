@@ -1,8 +1,22 @@
 import type { RegexNode, RepeatKind } from "../regex/parser";
 
 export type Shape =
-  | { type: "line"; x1: number; y1: number; x2: number; y2: number; className: string }
-  | { type: "rect"; x: number; y: number; width: number; height: number; className: string }
+  | {
+      type: "line";
+      x1: number;
+      y1: number;
+      x2: number;
+      y2: number;
+      className: string;
+    }
+  | {
+      type: "rect";
+      x: number;
+      y: number;
+      width: number;
+      height: number;
+      className: string;
+    }
   | { type: "text"; x: number; y: number; text: string; className: string }
   | { type: "circle"; cx: number; cy: number; r: number; className: string }
   | { type: "path"; d: string; className: string; dx: number; dy: number };
@@ -57,7 +71,9 @@ const layoutSkip = (width: number): Diagram => {
     height,
     entryY: y,
     exitY: y,
-    shapes: [{ type: "line", x1: 0, y1: y, x2: width, y2: y, className: "rr-line" }],
+    shapes: [
+      { type: "line", x1: 0, y1: y, x2: width, y2: y, className: "rr-line" },
+    ],
   };
 };
 
@@ -106,7 +122,8 @@ const layoutAlt = (nodes: RegexNode[]): Diagram => {
   const layouts = nodes.map(layout);
   const maxWidth = Math.max(...layouts.map((child) => child.width));
   const totalHeight = layouts.reduce(
-    (sum, child, index) => sum + child.height + (index < layouts.length - 1 ? gap : 0),
+    (sum, child, index) =>
+      sum + child.height + (index < layouts.length - 1 ? gap : 0),
     0,
   );
   const entryY = totalHeight / 2;
@@ -125,7 +142,14 @@ const layoutAlt = (nodes: RegexNode[]): Diagram => {
       bottomBranch = branchY;
     }
     shapes.push(...offsetShapes(child.shapes, pad, y));
-    shapes.push({ type: "line", x1: 0, y1: branchY, x2: pad - edgeGap, y2: branchY, className: "rr-line" });
+    shapes.push({
+      type: "line",
+      x1: 0,
+      y1: branchY,
+      x2: pad - edgeGap,
+      y2: branchY,
+      className: "rr-line",
+    });
     shapes.push({
       type: "line",
       x1: pad + child.width + edgeGap,
@@ -137,8 +161,22 @@ const layoutAlt = (nodes: RegexNode[]): Diagram => {
     y += child.height + gap;
   });
 
-  shapes.push({ type: "line", x1: 0, y1: topBranch, x2: 0, y2: bottomBranch, className: "rr-line" });
-  shapes.push({ type: "line", x1: rightX, y1: topBranch, x2: rightX, y2: bottomBranch, className: "rr-line" });
+  shapes.push({
+    type: "line",
+    x1: 0,
+    y1: topBranch,
+    x2: 0,
+    y2: bottomBranch,
+    className: "rr-line",
+  });
+  shapes.push({
+    type: "line",
+    x1: rightX,
+    y1: topBranch,
+    x2: rightX,
+    y2: bottomBranch,
+    className: "rr-line",
+  });
 
   return { width: rightX, height: totalHeight, entryY, exitY: entryY, shapes };
 };
@@ -147,37 +185,76 @@ const layoutRepeat = (inner: RegexNode, kind: RepeatKind): Diagram => {
   const child = layout(inner);
   const pad = 20;
   const edgeGap = 3;
-  const loopGap = kind.type === "oneOrMore" || kind.type === "zeroOrMore" ? 32 : kind.type === "range" ? 26 : 18;
-  const allowBypass = kind.type === "optional" || kind.type === "zeroOrMore" || (kind.type === "range" && kind.min === 0);
+  const loopGap =
+    kind.type === "oneOrMore" || kind.type === "zeroOrMore"
+      ? 32
+      : kind.type === "range"
+        ? 26
+        : 18;
+  const allowBypass =
+    kind.type === "optional" ||
+    kind.type === "zeroOrMore" ||
+    (kind.type === "range" && kind.min === 0);
   const allowLoop =
     kind.type === "oneOrMore" ||
     kind.type === "zeroOrMore" ||
     (kind.type === "range" && (kind.max ?? kind.min + 1) > 1);
-  const loopOutset = allowLoop && (kind.type === "range" || inner.type === "alt") ? 14 : 0;
+  const loopOutset =
+    allowLoop && (kind.type === "range" || inner.type === "alt") ? 14 : 0;
   const width = child.width + pad * 2 + loopOutset * 2;
   const height = child.height + loopGap * 2;
   const entryY = loopGap + child.entryY;
   const childX = pad + loopOutset;
   const shapes: Shape[] = [
     ...offsetShapes(child.shapes, childX, loopGap),
-    { type: "line", x1: 0, y1: entryY, x2: childX - edgeGap, y2: entryY, className: "rr-line" },
-    { type: "line", x1: childX + child.width + edgeGap, y1: entryY, x2: width, y2: entryY, className: "rr-line" },
+    {
+      type: "line",
+      x1: 0,
+      y1: entryY,
+      x2: childX - edgeGap,
+      y2: entryY,
+      className: "rr-line",
+    },
+    {
+      type: "line",
+      x1: childX + child.width + edgeGap,
+      y1: entryY,
+      x2: width,
+      y2: entryY,
+      className: "rr-line",
+    },
   ];
   const bypassY = loopGap / 2;
   const loopY = height - loopGap / 2;
 
   if (allowBypass) {
-    shapes.push({ type: "path", d: bypassPath(width, entryY, bypassY), className: "rr-line", dx: 0, dy: 0 });
+    shapes.push({
+      type: "path",
+      d: bypassPath(width, entryY, bypassY),
+      className: "rr-line",
+      dx: 0,
+      dy: 0,
+    });
   }
 
   if (allowLoop) {
-    const loopRadius = (kind.type === "oneOrMore" ? 14 : 8) + (loopOutset > 0 ? 4 : 0);
-    const loopClass = kind.type === "range" ? "rr-repeat-line" : "rr-repeat-soft";
+    const loopRadius =
+      (kind.type === "oneOrMore" ? 14 : 8) + (loopOutset > 0 ? 4 : 0);
+    const loopClass =
+      kind.type === "range" ? "rr-repeat-line" : "rr-repeat-soft";
     const loopLeft = childX;
     const loopRight = childX + child.width;
     const d =
       loopOutset > 0
-        ? loopPathOutsetLr(loopLeft, loopRight, entryY, loopY, loopRadius, loopOutset, loopOutset)
+        ? loopPathOutsetLr(
+            loopLeft,
+            loopRight,
+            entryY,
+            loopY,
+            loopRadius,
+            loopOutset,
+            loopOutset,
+          )
         : loopPath(loopLeft, loopRight, entryY, loopY, loopRadius);
     shapes.push({ type: "path", d, className: loopClass, dx: 0, dy: 0 });
   }
@@ -192,23 +269,42 @@ const layoutRepeat = (inner: RegexNode, kind: RepeatKind): Diagram => {
     });
   }
   if (kind.type === "oneOrMore") {
-    shapes.push({ type: "text", x: width / 2, y: labelBottomY(loopY, height), text: "1回以上", className: "rr-label" });
+    shapes.push({
+      type: "text",
+      x: width / 2,
+      y: labelBottomY(loopY, height),
+      text: "1回以上",
+      className: "rr-label",
+    });
   }
   if (kind.type === "zeroOrMore") {
-    shapes.push({ type: "text", x: width / 2, y: labelBottomY(loopY, height), text: "0回以上", className: "rr-label" });
+    shapes.push({
+      type: "text",
+      x: width / 2,
+      y: labelBottomY(loopY, height),
+      text: "0回以上",
+      className: "rr-label",
+    });
   }
 
   return { width, height, entryY, exitY: entryY, shapes };
 };
 
-const clampRadius = (radius: number, dx: number, dy: number) => Math.min(radius, Math.min(Math.abs(dx) / 2, Math.abs(dy) / 2));
+const clampRadius = (radius: number, dx: number, dy: number) =>
+  Math.min(radius, Math.min(Math.abs(dx) / 2, Math.abs(dy) / 2));
 
 const bypassPath = (width: number, entryY: number, bypassY: number) => {
   const radius = clampRadius(8, width, entryY - bypassY);
   return `M 0 ${entryY} L 0 ${bypassY + radius} Q 0 ${bypassY} ${radius} ${bypassY} L ${width - radius} ${bypassY} Q ${width} ${bypassY} ${width} ${bypassY + radius} L ${width} ${entryY}`;
 };
 
-const loopPath = (leftX: number, rightX: number, entryY: number, loopY: number, radiusHint: number) => {
+const loopPath = (
+  leftX: number,
+  rightX: number,
+  entryY: number,
+  loopY: number,
+  radiusHint: number,
+) => {
   const radius = clampRadius(radiusHint, rightX - leftX, loopY - entryY);
   return `M ${rightX} ${entryY} L ${rightX} ${loopY - radius} Q ${rightX} ${loopY} ${rightX - radius} ${loopY} L ${leftX + radius} ${loopY} Q ${leftX} ${loopY} ${leftX} ${loopY - radius} L ${leftX} ${entryY}`;
 };
@@ -222,7 +318,11 @@ const loopPathOutsetLr = (
   leftOutset: number,
   rightOutset: number,
 ) => {
-  const radius = clampRadius(radiusHint, rightX - leftX + leftOutset + rightOutset, loopY - entryY);
+  const radius = clampRadius(
+    radiusHint,
+    rightX - leftX + leftOutset + rightOutset,
+    loopY - entryY,
+  );
   const sx = rightX + rightOutset;
   const lx = leftX - leftOutset;
   return `M ${rightX} ${entryY} L ${sx} ${entryY} L ${sx} ${loopY - radius} Q ${sx} ${loopY} ${sx - radius} ${loopY} L ${lx + radius} ${loopY} Q ${lx} ${loopY} ${lx} ${loopY - radius} L ${lx} ${entryY} L ${leftX} ${entryY}`;
@@ -237,13 +337,24 @@ const rangeLabel = (min: number, max: number | null) => {
 
 const labelTopY = (bypassY: number) => Math.max(bypassY - 12, 10);
 
-const labelBottomY = (loopY: number, height: number) => Math.min(loopY + 30, height - 2);
+const labelBottomY = (loopY: number, height: number) =>
+  Math.min(loopY + 30, height - 2);
 
-export const offsetShapes = (shapes: Shape[], dx: number, dy: number): Shape[] =>
+export const offsetShapes = (
+  shapes: Shape[],
+  dx: number,
+  dy: number,
+): Shape[] =>
   shapes.map((shape) => {
     switch (shape.type) {
       case "line":
-        return { ...shape, x1: shape.x1 + dx, y1: shape.y1 + dy, x2: shape.x2 + dx, y2: shape.y2 + dy };
+        return {
+          ...shape,
+          x1: shape.x1 + dx,
+          y1: shape.y1 + dy,
+          x2: shape.x2 + dx,
+          y2: shape.y2 + dy,
+        };
       case "rect":
         return { ...shape, x: shape.x + dx, y: shape.y + dy };
       case "text":

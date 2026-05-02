@@ -232,7 +232,22 @@ const parseEscape = (parser: Parser): RegexNode => {
 };
 
 const isMetaChar = (ch: string) =>
-  [".", "^", "$", "|", "?", "+", "*", "(", ")", "[", "]", "{", "}", "\\"].includes(ch);
+  [
+    ".",
+    "^",
+    "$",
+    "|",
+    "?",
+    "+",
+    "*",
+    "(",
+    ")",
+    "[",
+    "]",
+    "{",
+    "}",
+    "\\",
+  ].includes(ch);
 
 const parseCharClass = (parser: Parser): RegexNode => {
   parser.next();
