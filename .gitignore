@@ -26,4 +26,3 @@ override.tf.json
 
 # Infisical local cache / generated files if any
 .infisical/secrets.json
-.infisical.json
